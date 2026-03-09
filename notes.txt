@@ -1,0 +1,7 @@
+Como redux esta funcionando atualmente: 
+
+acao(clique botao, carregamento pagina , etc)  -> reducer -> new state ou estado atualmente
+
+com saga com requisicoes assynchronas: middleware para checar o resultado
+
+acao(saga verifica )  -> saga chama reducer -> success or failure
