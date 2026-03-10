@@ -4,7 +4,7 @@ import createSagaMiddleware from 'redux-saga'
 import rootReducer from '../store/modules/rootReducer';
 import rootSaga from '../store/modules/rootSaga';
 
-import persistedReducer from "../modules/example/reduxPersist";
+import persistedReducer from "./modules/auth/reduxPersist";
 
 
 

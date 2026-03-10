@@ -8,8 +8,9 @@ import { get } from 'lodash';
 import { isEmail } from "validator";
 import * as actions from '../../store/modules/auth/actions';
 
-export default function Login() {
+export default function Login(props) {
   const dispatch = useDispatch();
+  const prevPath = get(props, 'location.state.prevPath', '/');
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +32,7 @@ export default function Login() {
 
     if(formErrors) return;
 
-    dispatch(actions.loginRequest({email,password}));
+    dispatch(actions.loginRequest({email,password, prevPath}));
 
  
   }

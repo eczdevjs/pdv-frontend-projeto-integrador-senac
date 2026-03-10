@@ -28,20 +28,22 @@ export default function Students() {
             <div key={String(student.id)}>
               <ProfilePicture>
                 {
-                  get(students, 'Fotos[0].url', false) ?
+                  get(student, 'Fotos[0].url', false) ?
                     (<img src={students.Fotos[0].url}></img>) : (<FaUserCircle size={36} />)
                 }
               </ProfilePicture>
 
               <span>{student.nome}</span>
               <span>{student.email}</span>
+
               <Link to={`/student/${student.id}/edit`}>
                 <FaEdit />
-
-                <Link to={`/student/${student.id}/delete`}>
-                  <FaWindowClose />
-                </Link>
               </Link>
+
+              <Link to={`/student/${student.id}/delete`}>
+                <FaWindowClose />
+              </Link>
+
             </div>
           ))
         }

@@ -5,7 +5,7 @@ export default reducers => {
     const persistedReducer = persistReducer({
         key: "react-api-rest",
         storage,
-        whiteList: ['auth']
+        whitelist: ['auth']
     }, reducers);
 
     return  persistedReducer;
