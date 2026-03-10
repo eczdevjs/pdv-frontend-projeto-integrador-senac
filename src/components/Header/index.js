@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 export default function Header() {
 
-  let botaoClicado = useSelector(state => state.example.botaoClicado);
   return (
     <Nav>
       <Link to="/">
@@ -25,7 +24,6 @@ export default function Header() {
       <Link  to="/students">
         <FaSignInAlt size={24} />
       </Link>
-      <p style={{ color: " #fff" }}> {botaoClicado ? 'botao clicado' : 'nao clicado'}</p>
 
     </Nav>
   );

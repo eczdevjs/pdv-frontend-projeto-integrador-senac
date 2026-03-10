@@ -1,8 +1,8 @@
 import {persistStore} from "redux-persist"
 import {createStore, applyMiddleware} from 'redux';
 import createSagaMiddleware from 'redux-saga'
-import rootReducer from '../modules/rootReducer'
-import rootSaga from '../modules/rootSaga';
+import rootReducer from '../store/modules/rootReducer';
+import rootSaga from '../store/modules/rootSaga';
 
 import persistedReducer from "../modules/example/reduxPersist";
 
