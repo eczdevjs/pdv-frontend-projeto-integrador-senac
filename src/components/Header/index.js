@@ -22,7 +22,7 @@ export default function Header() {
         <FaUserAlt size={24} />
       </Link>
 
-      <Link exact to="/students">
+      <Link  to="/students">
         <FaSignInAlt size={24} />
       </Link>
       <p style={{ color: " #fff" }}> {botaoClicado ? 'botao clicado' : 'nao clicado'}</p>
