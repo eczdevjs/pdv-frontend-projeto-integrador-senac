@@ -22,14 +22,14 @@ export default function CustomRoute({
     );
   }
 
-  return <Route  {...rest} component = {Component}/>
+  return <Route  {...rest} component={Component} />
 }
 
 CustomRoute.defaultProps = {
-    isClosed: false
+  isClosed: false
 }
 
 CustomRoute.propTypes = {
-    component: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired,
-    isClosed: PropTypes.bool
+  component: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired,
+  isClosed: PropTypes.bool
 }

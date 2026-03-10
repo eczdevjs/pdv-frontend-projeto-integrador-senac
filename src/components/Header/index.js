@@ -2,7 +2,7 @@ import React from "react";
 import { Nav } from "./styled";
 import { FaHome, FaUserAlt, FaSignInAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 export default function Header() {
 
@@ -13,15 +13,20 @@ export default function Header() {
         <FaHome size={24} />
       </Link>
 
-      <Link to="/kljlk">
+
+      <Link to="/register">
         <FaUserAlt size={24} />
       </Link>
 
-      <Link to="/sdf">
+      <Link to="/student">
+        <FaUserAlt size={24} />
+      </Link>
+
+      <Link exact to="/students">
         <FaSignInAlt size={24} />
       </Link>
-      <p style={{color:" #fff"}}> {botaoClicado ? 'botao clicado': 'nao clicado'}</p>
-     
+      <p style={{ color: " #fff" }}> {botaoClicado ? 'botao clicado' : 'nao clicado'}</p>
+
     </Nav>
   );
 }
