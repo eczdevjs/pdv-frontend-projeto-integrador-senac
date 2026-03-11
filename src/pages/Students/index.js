@@ -6,14 +6,20 @@ import { StudentContainer, ProfilePicture } from "./styled";
 import { get } from 'lodash';
 import { FaUserCircle, FaEdit, FaWindowClose } from 'react-icons/fa';
 import { FaE } from "react-icons/fa6";
+import Loading from "../../components/Loading";
+
 export default function Students() {
   const [students, setStudents] = useState([]);
+  const [isLoading, setIsLoading]  = useState(false);
+
 
   React.useEffect(() => {
     async function getData() {
+      setIsLoading(true);
       const response = await axios.get('/alunos');
       console.log(response.data)
       setStudents(response.data);
+      setIsLoading(false);
     }
 
     getData();
@@ -21,6 +27,7 @@ export default function Students() {
 
   return (
     <Container>
+      <Loading isLoading={isLoading}/>
       <h1>Students Page</h1>
       <StudentContainer>
         {

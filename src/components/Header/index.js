@@ -17,9 +17,9 @@ export default function Header() {
         <FaUserAlt size={24} />
       </Link>
 
-      <Link to="/student">
+      {/* <Link to="/student">
         <FaUserAlt size={24} />
-      </Link>
+      </Link> */}
 
       <Link  to="/students">
         <FaSignInAlt size={24} />

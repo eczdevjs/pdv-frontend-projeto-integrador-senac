@@ -1,20 +1,20 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Container } from "../../styles/GlobalStyle";
 import { toast } from "react-toastify";
 import { Form } from "./styled";
 import { isEmail } from "validator";
-import  axios from '../../services/axios';
+import axios from '../../services/axios';
 import history from "../../services/history";
-import {get} from 'lodash';
+import { get } from 'lodash';
 
 
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const [isLoading, setIsLoading] = useState(false);
   async function handleSubmit(e) {
+
     e.preventDefault();
     let formErrors = false;
 
@@ -34,24 +34,25 @@ export default function Register() {
     }
 
 
-    if(formErrors) return;
-
+    if (formErrors) return;
+    setIsLoading(true);
     try {
-      const response = await axios.post('/users', {nome: name, email, password});
+      const response = await axios.post('/users', { nome: name, email, password });
       console.log(response.data);
       toast.success('Account created');
+      setIsLoading(false);
       history.push('/login');
 
     } catch (error) {
-      
+
       const status = get(error, 'response.status', 0);
       const errors = get(error, 'response.data.errors', 0);
 
       errors.map(e => toast(e));
       console.log(status);
       console.log(errors);
+      setIsLoading(false);
     }
-
   }
 
   return (
