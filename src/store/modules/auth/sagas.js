@@ -33,7 +33,53 @@ function persistRehydrate({payload}){
 
 }
 
+function* registerRequest({payload}){
+    const {id, name, email, password} = payload;
+    console.log("registerRequest, payload: ", payload);
+
+    try {
+        if(id){
+            yield call(axios.put, '/users',{
+                email,
+                name,
+                password: password || undefined
+            });
+            toast.success('Account update succeed!');
+
+            yield put(actions.registerUpdatedSuccess({name, email, password}));
+        }else {
+            yield call(axios.post,'/users',{
+                email,
+                name,
+                password
+            } );
+
+            toast.success('Account creation succed!');
+            yield put(actions.registerCreatedSuccess({name,email, password}));
+            history.push('/login');
+        }
+        
+    } catch (e) {
+        const errors = get(e, 'response.data.error', []);
+        const status = get(e, 'response.status', 0);
+        if(status === 401){
+            toast.warning("You are supposed to redo login after update!");
+            yield put(actions.loginFailure());
+            return history.push('/login')
+        }
+        console.log(e);
+        if(errors.length > 0){
+            errors.map(e => toast.error(e))
+        } else {
+            toast.error('Unknow error');
+        }
+
+        yield put(actions.registerFailure());
+    }
+}
+
 export default all([
     takeLatest(types.LOGIN_REQUEST, loginRequest),
-    takeLatest(types.PERSIST_REHYDRATE, persistRehydrate)
-])
+    takeLatest(types.PERSIST_REHYDRATE, persistRehydrate),
+    takeLatest(types.REGISTER_REQUEST, registerRequest)
+]);

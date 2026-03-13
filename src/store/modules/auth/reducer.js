@@ -16,6 +16,7 @@ export default function (state = initialState, action) {
             newState.isLoading = true;
             return newState;
         }
+
         case types.LOGIN_SUCCESS: {
             const newState = { ...state };
             newState.isLoggedIn = true;
@@ -25,9 +26,34 @@ export default function (state = initialState, action) {
             newState.isLoading = false;
             return newState;
         }
+
         case types.LOGIN_FAILURE: {
             delete axios.defaults.Authorization;
             const newState = { ...initialState }
+            return newState;
+        }
+
+        case types.REGISTER_REQUEST: {
+            const newState = { ...state };
+            newState.isLoading = true;
+            return newState;
+        }
+
+        case types.REGISTER_CREATED_SUCCESS: {
+            const newState = { ...state };
+            newState.isLoading = false;
+            return newState;
+        }
+
+        case types.REGISTER_UPDATED_SUCCESS: {
+            const newState = { ...state };
+            newState.isLoading = false;
+            return newState;
+        }
+        
+        case types.REGISTER_FAILURE: {
+            const newState = { ...initialState }
+            newState.isLoading = false;
             return newState;
         }
         default:
