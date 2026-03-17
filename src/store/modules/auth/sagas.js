@@ -35,7 +35,6 @@ function persistRehydrate({payload}){
 
 function* registerRequest({payload}){
     const {id, name, email, password} = payload;
-    console.log("registerRequest, payload: ", payload);
 
     try {
         if(id){
@@ -78,8 +77,13 @@ function* registerRequest({payload}){
     }
 }
 
+export function loginFailure(){
+    delete axios.defaults.headers.common.Authorization;
+}
+
 export default all([
     takeLatest(types.LOGIN_REQUEST, loginRequest),
     takeLatest(types.PERSIST_REHYDRATE, persistRehydrate),
-    takeLatest(types.REGISTER_REQUEST, registerRequest)
+    takeLatest(types.REGISTER_REQUEST, registerRequest),
+    takeLatest(types.LOGIN_FAILURE, loginFailure)
 ]);

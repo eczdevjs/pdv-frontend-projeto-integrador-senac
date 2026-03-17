@@ -12,11 +12,11 @@ import Loading from '../../components/Loading'
 // trade of: tanto registro como edicao no mesmo codigo
 export default function Register() {
  const dispatch = useDispatch();
+
  const id = useSelector(state => state.auth.user.id) ;
  const nameStored = useSelector(state => state.auth.user.nome) ;
  const emailStored = useSelector(state => state.auth.user.email) ;
  const isLoading = useSelector(state => state.auth.isLoading) ;
-  console.log('isLoading from register: ', isLoading);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,6 +52,9 @@ export default function Register() {
     if (formErrors) return;
 
     dispatch(actions.registerRequest({name, email, password, id}));
+    dispatch(actions.loginFailure());
+    history.push('/login');
+
   }
 
   return (
