@@ -1,9 +1,8 @@
-import React, {useState} from "react";
-
+import React, { useState } from "react";
+import { FaUserCircle, FaEdit } from "react-icons/fa";
 import { Container } from "../../styles/GlobalStyle";
 import { get } from "lodash";
-import PropTypes from "prop-types";
-import { Form } from './styled';
+import { Form, ProfilePicture, Title } from './styled';
 import { toast } from "react-toastify";
 import { isEmail, isInt, isFloat } from "validator";
 import { useDispatch } from "react-redux";
@@ -11,6 +10,8 @@ import Loading from '../../components/Loading';
 import axios from "../../services/axios";
 import history from '../../services/history';
 import * as actions from '../../store/modules/auth/actions';
+import { Link } from "react-router-dom";
+
 
 
 export default function Student({ match }) {
@@ -24,6 +25,7 @@ export default function Student({ match }) {
   const [weight, setWeight] = useState('');
   const [height, setHeight] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [photo, setPhoto] = useState('');
 
   // na minha implementacao os dados vem da pagina anterior para nao precisar buscar no servidor de novo. Porem no curso ha uma nova chamada para o endpoint com as informacoes do aluno.
   React.useEffect(() => {
@@ -33,7 +35,7 @@ export default function Student({ match }) {
       try {
         setIsLoading(true);
         const { data } = await axios.get(`/alunos/${id}`);
-        const Foto = get(data, 'Fotos[0].url', []);
+        const Foto = get(data, 'Fotos[0].url', '');
 
         setName(data.nome || '');
         setlastName(data.sobrenome || '');
@@ -41,6 +43,7 @@ export default function Student({ match }) {
         setAge(data.idade || '');
         setWeight(data.peso || '');
         setHeight(data.altura || '');
+        setPhoto(Foto);
 
         setIsLoading(false);
 
@@ -142,7 +145,14 @@ export default function Student({ match }) {
   return (
     <Container>
       <Loading isLoading={isLoading} />
-      <h1 style={{fontFamily:"system-ui"}}>{id ? 'Edit' : 'New Student'}</h1>
+      <Title >{id ? 'Edit student' : 'New Student'}</Title>
+
+      {id && (
+        <ProfilePicture>
+          {photo ? (<img src={photo} alt={name}></img>) : (<FaUserCircle size={90} />)}
+          <Link to={`/photo/${id}`} > <FaEdit size={18}/></Link>
+        </ProfilePicture>
+        )}
 
       <Form onSubmit={handleSubmit}>
         <label htmlFor="name">

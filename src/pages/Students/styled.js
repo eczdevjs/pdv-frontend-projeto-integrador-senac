@@ -2,11 +2,6 @@ import styled from "styled-components";
 import { primaryColor, primaryDarkColor } from '../../config/colors';
 
 
-// export const Title = styled.h1`
-//   background: ${primaryColor};
-//   color: #fff;
-//   padding: 10px 20px;
-// `;
 export const StudentContainer = styled.div`
   margin-top: 20px;
 
@@ -14,14 +9,13 @@ export const StudentContainer = styled.div`
     display: flex;
     gap: 10px;
     align-items: center;
-    justfy-conent: space-between;
+    justify-content: space-between;
     padding: 5px 0 ;
     
   }
 
   div + div {
     border-top : 1px solid #eee;
-  
   }
 `
 
@@ -30,7 +24,6 @@ export const ProfilePicture = styled.div`
     width: 36px;
     height:36px;
     border-radius:50%;
-    
   }
 
 `

@@ -19,7 +19,7 @@ function Routes() {
       <CustomRoute exact path="/" component={Students} isClosed={true} />
       <CustomRoute exact path="/student/:id/edit" component={Student} isClosed={true} />
       <CustomRoute exact path="/student" component={Student} isClosed={true}/>
-      <CustomRoute exact path="/photo:id" component={Photos} isClosed={true} />
+      <CustomRoute exact path="/photo/:id" component={Photos} isClosed={true} />
       <CustomRoute exact path="/login" component={Login} isClosed={false}/>
       <CustomRoute exact path="/register" component={Register} isClosed={false} />
       <CustomRoute component={Page404} />

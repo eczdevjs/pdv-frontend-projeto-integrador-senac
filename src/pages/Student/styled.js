@@ -3,9 +3,7 @@ import { primaryColor, primaryDarkColor } from '../../config/colors';
 
 
 export const Title = styled.h1`
-  background: ${primaryColor};
-  color: #fff;
-  padding: 10px 20px;
+  text-align: center;
 `;
 
 export const Form = styled.form`
@@ -13,7 +11,7 @@ export const Form = styled.form`
   max-width: 500px;
   margin: 30px auto;
 
-  border: 1px solid #b6aeae;
+ 
   border-radius: 6px;
   box-shadow: 0 0 10px rgba(67, 63, 63, 0.1);
 
@@ -24,7 +22,7 @@ export const Form = styled.form`
   font-family: system-ui;
 
   input{
-    border: 1px solid #b6aeae;
+    border: 1px solid #e2dada;
     border-radius: 4px;
     height: 40px;
     padding: 0 15px;
@@ -61,4 +59,32 @@ export const Form = styled.form`
     filter: brightness(1.2);
   }
   
+`
+
+export const  ProfilePicture = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0 20px;
+  position: relative;
+  margin-top: 20px;
+
+  img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    position: absolute;
+    bottom: 0;
+    color: #fff;
+    background: ${primaryColor};
+    border-radius: 50%;
+
+  }
 `

@@ -6,13 +6,13 @@ import { StudentContainer, ProfilePicture } from "./styled";
 import { get } from 'lodash';
 import { FaUserCircle, FaEdit, FaWindowClose } from 'react-icons/fa';
 import { toast } from "react-toastify";
-import { FaE } from "react-icons/fa6";
+
 import Loading from "../../components/Loading";
 
 export default function Students() {
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading]  = useState(false);
-
+  const apiUrl = 'http://192.168.0.233:3001';
 
   React.useEffect(() => {
     async function getData() {
@@ -29,7 +29,7 @@ export default function Students() {
     }
 
     getData();
-  }, [])
+  }, []);
 
 
   async function handleDeleteAsk(e, student) {
@@ -58,18 +58,21 @@ export default function Students() {
       }
     }
   }
+
   return (
     <Container>
       <Loading isLoading={isLoading}/>
       <h1 style={{fontFamily: "system-ui"}}>Students Page</h1>
+      <Link to="/student">New student</Link>
       <StudentContainer>
         {
           students.map(student => (
             <div key={String(student.id)}>
               <ProfilePicture>
+              
                 {
-                  get(student, 'Fotos[0].url', false) ?
-                    (<img src={students.Fotos[0].url}></img>) : (<FaUserCircle size={36} />)
+                  get(student, 'Fotos[0].url', '') ?
+                    (<img src={student.Fotos[0].url}></img>) : (<FaUserCircle size={36} />)
                 }
               </ProfilePicture>
 
