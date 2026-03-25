@@ -20,7 +20,7 @@ function* loginRequest({ payload }) {
 
 
     } catch (error) {
-        toast.error('Either email or password invalid');
+        toast.error('Either email or password is invalid');
         yield put(actions.loginFailure());
     }
 }

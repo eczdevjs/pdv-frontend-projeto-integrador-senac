@@ -41,7 +41,7 @@ export default function Login(props) {
   return (
     <Container>
       <Loading isLoading={isLoading}/>
-      <h1>Log in</h1>
+      <h1>Log into PDV  System</h1>
       <Form onSubmit={handleSubmit}>
         <label htmlFor="email">
           <input type='text' placeholder="your email" value={email} onChange={e => setEmail(e.target.value)}></input>

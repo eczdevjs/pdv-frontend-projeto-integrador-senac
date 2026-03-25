@@ -3,9 +3,9 @@ import { Switch, withRouter } from "react-router-dom";
 import CustomRoute from "./CustomRoute";
 import Page404 from "../pages/Page404";
 import Login from "../pages/Login";
-import Student from '../pages/Student';
-import Students from '../pages/Students';
-import Photos from '../pages/Photos';
+import Student from '../pages/Clients';
+import Students from '../pages/Products';
+import Photos from '../pages/Sales';
 import Register from '../pages/Register';
 import { toast } from "react-toastify";
 
