@@ -30,6 +30,7 @@ export const Nav = styled.nav`
         background: rgba(255, 255, 255, 0.2);
         border-radius: 10px;
     }
+
     a {
         color:#fff;
         font-weight: bold;
@@ -40,10 +41,19 @@ export const Nav = styled.nav`
         transition: all 0.3s;
         margin: 0 10px 0;
         padding: 25px;
-    }
-    
-    &:hover{
-        filter: brightness(80%)
+        border-radius: 4px;
+        &.active {
+            background-color: #038bf4;
+            border-left: 4px solid #fff;
+            padding-left: 21px;
+        }
+            &:not(.active) {
+            background-color: transparent;
+            border-left: 5px solid transparent;
+        }
+        &:hover {
+            background-color: #038bf4;
+        }
     }
 
     svg {

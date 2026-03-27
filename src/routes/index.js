@@ -9,6 +9,7 @@ import Sales from '../pages/Sales';
 import Stock from '../pages/Stock';
 import Cashier from '../pages/Cashier';
 import Register from '../pages/Register';
+import Home from '../pages/Home'
 import { toast } from "react-toastify";
 
 function Routes() {
@@ -18,6 +19,8 @@ function Routes() {
 
   return (
     <Switch>
+
+      <CustomRoute exact path="/" component={Home} isClosed={true} />
       <CustomRoute exact path="/clients" component={Clients} isClosed={true} />
       <CustomRoute exact path="/products" component={Products} isClosed={true} />
       <CustomRoute exact path="/sales" component={Sales} isClosed={true}/>
@@ -26,6 +29,7 @@ function Routes() {
       <CustomRoute exact path="/cashier" component={Cashier} isClosed={true}/>
       <CustomRoute exact path="/register" component={Register} isClosed={false} />
       <CustomRoute component={Page404} />
+      
     </Switch>
   );
 }
