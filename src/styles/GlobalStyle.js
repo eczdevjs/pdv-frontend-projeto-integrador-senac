@@ -67,11 +67,10 @@ export const Container = styled.section`
 `;
 
 export const ContentWrappper = styled.div`
-margin-left: 200px;
+margin-left: ${props => (props.menuOpened ? '200px': '70px')};
+transition: margin-left 0.3s ease-in-out;
+width: auto;
 min-height: 100vh;
-
-width: calc(100% - 200px);
-
 display: flex;
 justify-content: center;
 align-items: center;
@@ -79,8 +78,8 @@ padding: 20px;
 
 background-color: #f5f5f5;
 
-@media (max-width: 768px) {
-  margin-left: 0;
-  width: 100%;
-}
+// @media (max-width: 768px) {
+//   margin-left: 0;
+//   width: 100%;
+// }
 `

@@ -1,8 +1,7 @@
 import React from "react";
-import { Nav } from "./styled";
+import { Nav , ToggleBtn} from "./styled";
 import * as colors from '../../config/colors';
-import { FaHome, FaUserAlt, FaSignInAlt, FaCircle, FaPowerOff } from "react-icons/fa";
-import { SlHome, SlUser, SlPower, SlPeople, SlTag, SlLogout, SlSocialDropbox, SlDrawer, SlNote } from 'react-icons/sl';
+import { SlHome, SlUser, SlPower, SlPeople, SlTag, SlLogout, SlSocialDropbox, SlDrawer, SlNote , SlMenu} from 'react-icons/sl';
 import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/modules/auth/actions';
@@ -12,6 +11,7 @@ import history from "../../services/history";
 
 export default function Header() {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  const [isOpen, setIsOpen] = React.useState(true);
   const dispatch = useDispatch();
   function handleLogout(e) {
 
@@ -22,7 +22,11 @@ export default function Header() {
   }
 
   return (
-    <Nav>
+    <Nav isOpen={isOpen}>
+
+      <ToggleBtn onClick={()=> setIsOpen(!isOpen)}>
+        <SlMenu/>
+      </ToggleBtn>
 
       <NavLink exact to="/" end>
         <SlHome size={24} /><span>Home</span>
@@ -67,7 +71,7 @@ export default function Header() {
         ) :
         (
           <NavLink to="/register">
-            <FaUserAlt size={24} />
+            <SlUser size={24} />
           </NavLink>
         )
       }
