@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from "styled-components";
 
-import {primaryColor, primaryDarkColor, errorColor,  successColor} from '../config/colors'
+import { primaryColor, primaryDarkColor, errorColor, successColor } from '../config/colors'
 import 'react-toastify/dist/ReactToastify.css'
 
 export default createGlobalStyle`
@@ -53,10 +53,34 @@ export default createGlobalStyle`
 `;
 
 export const Container = styled.section`
-  max-width: 500px;
-  background: #fff;
-  margin: 30px auto;
-  padding: 30px;
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    // display: flex;
+    // flex-direction: column;
+    // align-items: center;
+    width: 100%;
+    max-width: 500px;
+    background: #fff;
+    margin-left: 200px;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin:0;
 `;
+
+export const ContentWrappper = styled.div`
+margin-left: 200px;
+min-height: 100vh;
+
+width: calc(100% - 200px);
+
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
+
+background-color: #f5f5f5;
+
+@media (max-width: 768px) {
+  margin-left: 0;
+  width: 100%;
+}
+`

@@ -3,9 +3,11 @@ import { Switch, withRouter } from "react-router-dom";
 import CustomRoute from "./CustomRoute";
 import Page404 from "../pages/Page404";
 import Login from "../pages/Login";
-import Student from '../pages/Clients';
-import Students from '../pages/Products';
-import Photos from '../pages/Sales';
+import Clients from '../pages/Clients';
+import Products from '../pages/Products';
+import Sales from '../pages/Sales';
+import Stock from '../pages/Stock';
+import Cashier from '../pages/Cashier';
 import Register from '../pages/Register';
 import { toast } from "react-toastify";
 
@@ -16,11 +18,12 @@ function Routes() {
 
   return (
     <Switch>
-      <CustomRoute exact path="/" component={Students} isClosed={true} />
-      <CustomRoute exact path="/student/:id/edit" component={Student} isClosed={true} />
-      <CustomRoute exact path="/student" component={Student} isClosed={true}/>
-      <CustomRoute exact path="/photo/:id" component={Photos} isClosed={true} />
+      <CustomRoute exact path="/clients" component={Clients} isClosed={true} />
+      <CustomRoute exact path="/products" component={Products} isClosed={true} />
+      <CustomRoute exact path="/sales" component={Sales} isClosed={true}/>
+      <CustomRoute exact path="/stock" component={Stock} isClosed={true} />
       <CustomRoute exact path="/login" component={Login} isClosed={false}/>
+      <CustomRoute exact path="/cashier" component={Cashier} isClosed={true}/>
       <CustomRoute exact path="/register" component={Register} isClosed={false} />
       <CustomRoute component={Page404} />
     </Switch>

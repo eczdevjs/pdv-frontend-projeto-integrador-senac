@@ -14,22 +14,22 @@ export default function Students() {
   const [isLoading, setIsLoading]  = useState(false);
   const apiUrl = 'http://192.168.0.233:3001';
 
-  React.useEffect(() => {
-    async function getData() {
-      setIsLoading(true);
-      try {
-        const response = await axios.get('/alunos');
-        setStudents(response.data);
-        toast.success()
-        setIsLoading(false);
-      } catch (e) {
-        setIsLoading(false);
-        toast.error(e.message);
-      }
-    }
+  // React.useEffect(() => {
+  //   async function getData() {
+  //     setIsLoading(true);
+  //     try {
+  //       const response = await axios.get('/alunos');
+  //       setStudents(response.data);
+  //       toast.success()
+  //       setIsLoading(false);
+  //     } catch (e) {
+  //       setIsLoading(false);
+  //       toast.error(e.message);
+  //     }
+  //   }
 
-    getData();
-  }, []);
+  //   getData();
+  // }, []);
 
 
   async function handleDeleteAsk(e, student) {
@@ -61,7 +61,8 @@ export default function Students() {
 
   return (
     <Container>
-      <Loading isLoading={isLoading}/>
+      <h1>Cashier Page</h1>
+      {/* <Loading isLoading={isLoading}/>
       <h1 style={{fontFamily: "system-ui"}}>Students Page</h1>
       <Link to="/student">New student</Link>
       <StudentContainer>
@@ -91,7 +92,7 @@ export default function Students() {
           ))
         }
 
-      </StudentContainer>
+      </StudentContainer> */}
 
     </Container>
   );

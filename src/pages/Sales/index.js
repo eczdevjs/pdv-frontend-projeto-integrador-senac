@@ -9,27 +9,31 @@ import { get } from "lodash";
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 import * as actions from '../../store/modules/auth/actions'
-export default function Photos({ match }) {
+
+
+
+
+export default function Sales({ match }) {
   const dispatch = useDispatch();
   const id = get(match, 'params.id', '');
   const [isLoading, setIsLoading] = React.useState(false);
   const [photo, setPhoto] = React.useState('');
 
-  React.useEffect(() => {
-    async function getData() {
-      try {
-        setIsLoading(true);
-        const { data } = axios.get(`/alunos/${id}`);
-        setPhoto(get(data, 'Fotos[0].url', ''));
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        toast.error('Error fetching image, redirecting ...');
-      }
-    }
+  // React.useEffect(() => {
+  //   async function getData() {
+  //     try {
+  //       setIsLoading(true);
+  //       const { data } = axios.get(`/alunos/${id}`);
+  //       setPhoto(get(data, 'Fotos[0].url', ''));
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       setIsLoading(false);
+  //       toast.error('Error fetching image, redirecting ...');
+  //     }
+  //   }
 
-    getData();
-  }, [])
+  //   getData();
+  // }, [])
 
   async function handleChange(e) {
 
@@ -63,19 +67,20 @@ export default function Photos({ match }) {
 
   return (
     <Container>
-      <Loading isLoading={isLoading} />
+      <h1>Sales Page</h1>
+      {/* <Loading isLoading={isLoading} />
       <Title>Photos Page</Title>
       <Form>
         <label htmlFor="photo">
           {photo ? <img src={photo} alt="Profile photo" /> : 'Select'}
           <input type="file" id="photo" onChange={handleChange}></input>
         </label>
-      </Form>
+      </Form> */}
     </Container>
   );
 }
 
 
-Photos.prototype = {
+Sales.prototype = {
   match: PropTypes.shape({}).isRequired
 }

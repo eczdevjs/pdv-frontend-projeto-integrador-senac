@@ -18,7 +18,6 @@ function* loginRequest({ payload }) {
 
         history.push(payload.prevPath);
 
-
     } catch (error) {
         toast.error('Either email or password is invalid');
         yield put(actions.loginFailure());

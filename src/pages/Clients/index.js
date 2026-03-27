@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 
 
 
-export default function Student({ match }) {
+export default function Clients({ match }) {
 
   const id = match.params.id;
   const dispatch = useDispatch();
@@ -144,56 +144,7 @@ export default function Student({ match }) {
 
   return (
     <Container>
-      <Loading isLoading={isLoading} />
-      <Title >{id ? 'Edit student' : 'New Student'}</Title>
-
-      {id && (
-        <ProfilePicture>
-          {photo ? (<img src={photo} alt={name}></img>) : (<FaUserCircle size={90} />)}
-          <Link to={`/photo/${id}`} > <FaEdit size={18}/></Link>
-        </ProfilePicture>
-        )}
-
-      <Form onSubmit={handleSubmit}>
-        <label htmlFor="name">
-          Name
-          <input type="text" value={name} onChange={e => setName(e.target.value)}>
-          </input>
-        </label>
-
-        <label htmlFor="lastname">
-          Last name
-          <input type="text" value={lastName} onChange={e => setlastName(e.target.value)}>
-          </input>
-        </label>
-
-        <label htmlFor="email">
-          Email
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)}>
-          </input>
-        </label>
-
-        <label htmlFor="age">
-          Age
-          <input type="number" min={0} value={age} onChange={e => setAge(e.target.value)}>
-          </input>
-        </label>
-
-        <label htmlFor="height">
-          Height
-          <input type="number" step={0.01} min={0} max={3} value={height} onChange={e => setHeight(e.target.value)} >
-          </input>
-        </label>
-
-        <label htmlFor="weight">
-          Weight
-          <input type="number" step={0.01} min={0} value={weight} onChange={e => setWeight(e.target.value)}>
-          </input>
-        </label>
-
-        <button>{id ? 'Save' : 'Register'}</button>
-      </Form>
-
+     <h1>Clients Page</h1>
     </Container>
   );
 }
