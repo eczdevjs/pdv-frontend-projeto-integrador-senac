@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "../../styles/GlobalStyle";
 import { toast } from "react-toastify";
-import { Form } from './styled';
+import { Form,Title } from './styled';
 import { get } from 'lodash';
 import { isEmail } from "validator";
 import Loading from '../../components/Loading'
@@ -41,7 +41,7 @@ export default function Login(props) {
   return (
     <Container>
       <Loading isLoading={isLoading}/>
-      <h1>Log into PDV  System</h1>
+      <Title>E-PDV  System</Title>
       <Form onSubmit={handleSubmit}>
         <label htmlFor="email">
           <input type='text' placeholder="your email" value={email} onChange={e => setEmail(e.target.value)}></input>

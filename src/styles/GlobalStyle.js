@@ -64,6 +64,7 @@ export const Container = styled.section`
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     margin:0;
+
 `;
 
 export const ContentWrappper = styled.div`

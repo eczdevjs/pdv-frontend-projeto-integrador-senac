@@ -71,7 +71,7 @@ export default function Header() {
         ) :
         (
           <NavLink to="/register">
-            <SlUser size={24} />
+            <SlUser size={24} /><span>Register</span>
           </NavLink>
         )
       }
