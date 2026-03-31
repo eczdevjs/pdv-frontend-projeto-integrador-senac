@@ -2,68 +2,171 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from '../../services/axios';
 import { Container } from "../../styles/GlobalStyle";
-import { CashierContainer, CashierSubContainer, MainContainer, TabButton, TabNav } from "./styled";
+import { CashierContainer, CashierSubContainer, MainContainer, TabButton, TabNav, Modal, Overlay, Button } from "./styled";
 import { get } from 'lodash';
 import { FaUserCircle, FaEdit, FaWindowClose } from 'react-icons/fa';
 import { toast } from "react-toastify";
-
 import Loading from "../../components/Loading";
 
+import { useCashier } from "../../Context/CashierContext";
+
+
 export default function Cashier() {
-  const [transactions, setTransactions] = useState([]);
+
   const [activeTab, setActiveTab] = useState('current');
-  console.log('aba ativa agora: ', activeTab)
+  // tenho que exportar o componente Loading e adicionar no retorno do componente
   const [isLoading, setIsLoading] = useState(false);
-  const apiUrl = 'http://192.168.0.233:3001';
-  const [isCashierOpen, setIsCashierOpen] = useState(false);
+  const [openedAt, setOpenedAt] = useState('');
+  const [initialBalance, setInitialBalance] = useState(0);
+  const [closingBalance, setClosingBalance] = useState(0);
+  const [transactions, setTransactions] = useState([]);
+  const [totalSales, setTotalSales] = useState(0);
+  const [finalBalance, setFinalBalance] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [openingBalance, setOpeningBalance] = useState(0);
 
-  // React.useEffect(() => {
-  //   async function getData() {
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await axios.get('/alunos');
-  //       setStudents(response.data);
-  //       toast.success()
-  //       setIsLoading(false);
-  //     } catch (e) {
-  //       setIsLoading(false);
-  //       toast.error(e.message);
-  //     }
-  //   }
-
-  //   getData();
-  // }, []);
+  const { handleOpenCashier, handleCloseCashier, handleGetShift , isCashierOpen } = useCashier();
 
 
-  // async function handleDeleteAsk(e, student) {
-  //   e.preventDefault();
-  //   const confirm = window.confirm(`Do you really wish to exclude ${student.nome} ?`);
-  //   console.log(confirm);
-  //   if (confirm) {
-  //     try {
-  //       setIsLoading(true);
-  //       await axios.delete(`alunos/${student.id}`);
-  //       const index = students.indexOf(student);
-  //       const studentsUpdated = [...students];
-  //       studentsUpdated.splice(index, 1);
-  //       setStudents(studentsUpdated);
-  //       setIsLoading(false);
-  //       toast.success("Student has been excluded");
+  React.useEffect(() => {
 
-  //     }
-  //     catch (e) {
-  //       setIsLoading(false);
-  //       const errors = get(e, 'response.data.errors', []);
-  //       errors.map(e => toast.error(e));
-  //       if (!errors) {
-  //         toast.error(e);
-  //       }
-  //     }
-  //   }
-  // }
+    const shiftId = localStorage.getItem('activeShiftId');
+
+    if (shiftId) {
+      async function getShift() {
+        setIsLoading(true);
+        try {
+          const data = await handleGetShift(shiftId);
+          const { openinBalance, startTime } = data;
+          setOpenedAt(startTime);
+          setInitialBalance(openinBalance);
+          setIsLoading(false);
+        } catch (e) {
+          setIsLoading(false);
+          toast.error(e.message, {autoClose: 8000});
+        }
+      }
+
+      async function getTransactions() {
+        setIsLoading(true);
+        try {
+          const response = await axios.get(`/cashier/balances/${shiftId}`);
+          const { openinBalance, startTime } = response.data;
+          setTransactions(response.data);
+          toast.success()
+          setIsLoading(false);
+        } catch (e) {
+          setIsLoading(false);
+          toast.error(e.response.data.msg);
+        }
+      }
+      getShift();
+      getTransactions();
+    }
+
+
+  }, []);
+
+
+  function handleModalOpeningCashier() {
+    setShowModal(true);
+  }
+
+  function confirmOpeningCashier() {
+    console.log('Opening cashier with: ', openingBalance);
+
+    setIsLoading(true);
+    async function getData() {
+      try {
+        const data = await handleOpenCashier(openingBalance);
+        console.log(data);
+        setOpenedAt(data.startTime);
+        setInitialBalance(data.openingBalance);
+        toast.success('Cashier opened');
+        setIsLoading(false);
+        setShowModal(false);
+        return data;
+      } catch (e) {
+
+        setIsLoading(false);
+        setShowModal(false);
+        const errorMessage = e.response?.data?.msg || 'Unexpected error'
+        console.log(e);
+        toast.error(errorMessage, { autoClose: 4000 });
+      }
+    }
+    getData();
+  }
+
+
+
+  function handleModalClosingCashier() {
+    setShowModal(true);
+  }
+
+  function confirmClosingCashier() {
+
+    async function getData() {
+      try {
+
+        const data = await handleCloseCashier(closingBalance);
+        toast.success('Cashier Closed');
+        setIsLoading(false);
+        setShowModal(false);
+        return data;
+      } catch (error) {
+
+        setIsLoading(false);
+        setShowModal(false);
+        const errorMessage = error.response?.data?.msg || 'Unexpected error'
+        console.log(error)
+        console.log(error.response);
+        toast.error(errorMessage, { autoClose: 4000 });
+      }
+    }
+    getData();
+  }
+
+
+  function handleCashierHistory() {
+
+  }
+
+  function handleAddCash() {
+
+  }
+
+  function handleWithdraw() {
+
+  }
+
 
   return (
     <MainContainer>
+      <Loading isLoading={isLoading} />
+
+      {showModal && (<Overlay>
+        <Modal>
+          <h2>{isCashierOpen ? 'Close Cashier' : "Open Cashier"}</h2>
+          <p>{isCashierOpen ? "Enter final balance" :'Enter final balance' }</p>
+          <input
+            type="number"
+            placeholder="R$ 0,00"
+            value={isCashierOpen ? closingBalance  : openingBalance}
+            onChange={(e) => isCashierOpen ? setClosingBalance(e.target.value) : setOpeningBalance(e.target.value) }
+            autoFocus
+          />
+          <div className="actions">
+            <Button onClick={() => setShowModal(false)}>Cancel</Button>
+
+            <Button confirm onClick={
+              () => isCashierOpen ?confirmClosingCashier() :confirmOpeningCashier()}>
+              Confirm</Button>
+          </div>
+        </Modal>
+      </Overlay>
+      )
+      }
       <TabNav>
         <TabButton
           active={activeTab === 'current'}
@@ -83,10 +186,26 @@ export default function Cashier() {
       {activeTab === 'current' && (<CashierContainer>
         <CashierSubContainer>
           <h1>Cash Summary</h1>
-          <span>Opened at: </span>
-          <span>Initial balance: </span>
-          <span>Total Sales: </span>
-          <span>Final Balance: </span>
+          <div>
+            <span className="label">Opened at: </span>
+            <span className="value"> {openedAt ? openedAt : ''} </span>
+          </div>
+
+          <div>
+            <span className="label" >Initial balance: </span>
+            <span className="value">R${initialBalance ? initialBalance : ''} </span>
+          </div>
+
+          <div>
+            <span className="label" >Total Sales: </span>
+            <span className="value">{totalSales ? totalSales : `R$ ${0}`} </span>
+          </div>
+
+          <div>
+            <span className="label" >Final Balance: </span>
+            <span className="value">{finalBalance ? finalBalance : `R$ 0`} </span>
+          </div>
+
           <div style={{ display: 'flex', gap: '10px', marginTop: '15px', padding: '10px' }}>
             <button>Add Cash</button>
             <button>Withdraw</button>
@@ -95,15 +214,17 @@ export default function Cashier() {
 
         <CashierSubContainer>
           <h2>Payment methods</h2>
-          <span>Credit Card: 10,00</span>
-          <span>Debit Card: 10,00</span>
-          <span>Pix Card: 10,00</span>
+          <span>Credit Card: R$ 0,00</span>
+          <span>Debit Card: R$ 0,00</span>
+          <span>Pix : R$ 0,00</span>
+          <span>Cash : R$ 0,00</span>
+
         </CashierSubContainer>
 
         <CashierSubContainer>
           <h2>Transactions</h2>
           <h4>List</h4>
-          <button>Close Cashier</button>
+          <button onClick={isCashierOpen ? handleModalClosingCashier : handleModalOpeningCashier}>{isCashierOpen ? 'Close Cashier' : 'Open Cashier'}</button>
         </CashierSubContainer>
       </CashierContainer>)}
 
@@ -118,43 +239,9 @@ export default function Cashier() {
       )}
     </MainContainer>
   );
+
 }
 
 
 
 
-
-// codigo anterior para salvar apenas, remover posteriormente
-
-{/* <Loading isLoading={isLoading}/>
-      <h1 style={{fontFamily: "system-ui"}}>Students Page</h1>
-      <Link to="/student">New student</Link>
-      <StudentContainer>
-        {
-          students.map(student => (
-            <div key={String(student.id)}>
-              <ProfilePicture>
-              
-                {
-                  get(student, 'Fotos[0].url', '') ?
-          
-}          (<img src={student.Fotos[0].url}></img>) : (<FaUserCircle size={36} />)
-                }
-              </ProfilePicture>
-
-              <span>{student.nome}</span>
-              <span>{student.email}</span>
-
-              <Link to = {`/student/${student.id}/edit`}>
-                  <FaEdit />
-              </Link>
-
-              <Link to={`/student/${student.id}/delete`}>
-                <FaWindowClose />
-              </Link>
-
-            </div>
-          ))
-        }
-
-      </StudentContainer> */}
