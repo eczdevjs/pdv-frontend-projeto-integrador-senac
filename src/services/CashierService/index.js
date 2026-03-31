@@ -32,8 +32,22 @@ export const getShifRequest = async (shiftId) => {
     }
 }
 
-export const getTransactionsRequest = async () => {
-    
+export const getTransactionsRequest = async (shiftId) => {
+    try {
+        const response = await axios.get(`/cashier/history/${shiftId}`);
+        return response.data.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getBalancesRequest = async (shiftId) => {
+    try {
+        const response = await axios.get(`/cashier/balances/${shiftId}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 }
 
 

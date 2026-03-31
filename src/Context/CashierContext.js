@@ -1,5 +1,5 @@
 import react, { createContext, useState, useContext } from 'react';
-import { openCashierRequest, closeCashierRequest, getShifRequest } from '../services/CashierService';
+import { openCashierRequest, closeCashierRequest, getShifRequest, getTransactionsRequest, getBalancesRequest } from '../services/CashierService';
 const CashierContext = createContext();
 
 export const CashierProvider = ({ children }) => {
@@ -42,8 +42,26 @@ export const CashierProvider = ({ children }) => {
         }
     }
 
+    const handleGetTransactions = async (shiftId) => {
+        try {
+            const data  = await getTransactionsRequest(shiftId);
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
 
-    return (<CashierContext.Provider value={{ shiftId, isCashierOpen, handleOpenCashier, handleCloseCashier, handleGetShift }}>
+    const handleGetBalances = async (shiftId) => {
+        try {
+            const data = await getBalancesRequest(shiftId);
+            return data
+        }catch(error){
+            throw error;
+        }
+    }
+
+
+    return (<CashierContext.Provider value={{ shiftId, isCashierOpen, handleOpenCashier, handleCloseCashier, handleGetShift, handleGetTransactions, handleGetBalances }}>
         {children}
     </CashierContext.Provider>)
 }

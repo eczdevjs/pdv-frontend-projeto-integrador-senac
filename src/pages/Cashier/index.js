@@ -24,48 +24,45 @@ export default function Cashier() {
   const [finalBalance, setFinalBalance] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [openingBalance, setOpeningBalance] = useState(0);
+  const [balances, setBalances] = useState([]);
 
-  const { handleOpenCashier, handleCloseCashier, handleGetShift , isCashierOpen } = useCashier();
+  const { handleOpenCashier, handleCloseCashier, handleGetShift, isCashierOpen, handleGetTransactions , handleGetBalances} = useCashier();
 
 
   React.useEffect(() => {
 
-    const shiftId = localStorage.getItem('activeShiftId');
+    const storedId = localStorage.getItem('activeShiftId');
 
-    if (shiftId) {
+    if (storedId) {
+      const shiftId = Number(storedId);
+
       async function getShift() {
+
         setIsLoading(true);
         try {
           const data = await handleGetShift(shiftId);
-          const { openinBalance, startTime } = data;
-          setOpenedAt(startTime);
-          setInitialBalance(openinBalance);
-          setIsLoading(false);
-        } catch (e) {
-          setIsLoading(false);
-          toast.error(e.message, {autoClose: 8000});
-        }
-      }
 
-      async function getTransactions() {
-        setIsLoading(true);
-        try {
-          const response = await axios.get(`/cashier/balances/${shiftId}`);
-          const { openinBalance, startTime } = response.data;
-          setTransactions(response.data);
-          toast.success()
+          const { openingBalance, startTime } = data;
+          setOpenedAt(startTime);
+          setInitialBalance(openingBalance);
+
+          const transactionData = await handleGetTransactions(shiftId);
+          console.log('Dados brutos api: ', transactionData);
+          setTransactions(transactionData);
+
+          const balancesData = await handleGetBalances(shiftId);
+          setBalances(balancesData);
+          console.log("balances data: ", balancesData);
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
-          toast.error(e.response.data.msg);
+          console.log('erro no carregamento: ', e)
+          toast.error("Nao foi possivel restaurar  a sessao caixa", { autoClose: 8000 });
         }
       }
       getShift();
-      getTransactions();
     }
-
-
-  }, []);
+  }, [handleGetShift, handleGetTransactions]);
 
 
   function handleModalOpeningCashier() {
@@ -148,19 +145,19 @@ export default function Cashier() {
       {showModal && (<Overlay>
         <Modal>
           <h2>{isCashierOpen ? 'Close Cashier' : "Open Cashier"}</h2>
-          <p>{isCashierOpen ? "Enter final balance" :'Enter final balance' }</p>
+          <p>{isCashierOpen ? "Enter final balance" : 'Enter final balance'}</p>
           <input
             type="number"
             placeholder="R$ 0,00"
-            value={isCashierOpen ? closingBalance  : openingBalance}
-            onChange={(e) => isCashierOpen ? setClosingBalance(e.target.value) : setOpeningBalance(e.target.value) }
+            value={isCashierOpen ? closingBalance : openingBalance}
+            onChange={(e) => isCashierOpen ? setClosingBalance(e.target.value) : setOpeningBalance(e.target.value)}
             autoFocus
           />
           <div className="actions">
             <Button onClick={() => setShowModal(false)}>Cancel</Button>
 
             <Button confirm onClick={
-              () => isCashierOpen ?confirmClosingCashier() :confirmOpeningCashier()}>
+              () => isCashierOpen ? confirmClosingCashier() : confirmOpeningCashier()}>
               Confirm</Button>
           </div>
         </Modal>
@@ -213,17 +210,41 @@ export default function Cashier() {
         </CashierSubContainer>
 
         <CashierSubContainer>
-          <h2>Payment methods</h2>
-          <span>Credit Card: R$ 0,00</span>
-          <span>Debit Card: R$ 0,00</span>
-          <span>Pix : R$ 0,00</span>
-          <span>Cash : R$ 0,00</span>
+          <h1>Filtered by Payment</h1>
+        {balances.length > 0 ? (
+           balances.map((item, index) => 
+            (<div key={`${item.paymentMethod}-${index}`} className="trasaction-item">
+              <div className="info">
+                <h3><strong> {item.name}</strong></h3>
+                <h2><small> {item.payment.name}</small></h2>
+              </div>
+              <div className="value">
+                {new Intl.NumberFormat('pt-BR',{style: "currency",currency: 'BRL'}).format(item.amount)}
+              </div>
 
+            </div>)
+           )
+          ) : (<p>No transactions found.</p>)}
         </CashierSubContainer>
 
         <CashierSubContainer>
           <h2>Transactions</h2>
-          <h4>List</h4>
+          
+          {transactions.length > 0 ? (
+           transactions.map((item, index) => 
+            (<div key={`${item.paymentMethod}-${index}`} className="trasaction-item">
+              <div className="info">
+                <strong>{item.type.name}</strong>
+                <small> {item.payment.name}</small>
+              </div>
+              <div className="value">
+                {new Intl.NumberFormat('pt-BR',{style: "currency",currency: 'BRL'}).format(item.totalAmount || item.amount)}
+              </div>
+
+            </div>)
+           )
+          ) : (<p>No transactions found.</p>)}
+
           <button onClick={isCashierOpen ? handleModalClosingCashier : handleModalOpeningCashier}>{isCashierOpen ? 'Close Cashier' : 'Open Cashier'}</button>
         </CashierSubContainer>
       </CashierContainer>)}
