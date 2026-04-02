@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { primaryColor } from '../../config/colors';
+import { primaryColor } from '../../../config/colors';
 
 const drawerWidth = '200px';
 const closeWidth = '70px'

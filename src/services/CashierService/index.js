@@ -50,4 +50,18 @@ export const getBalancesRequest = async (shiftId) => {
     }
 }
 
+export const depositRequest = async (shiftId, amount)=> {
+    try {
+        const data = await axios.post(`/cashier/deposit/${shiftId}`, {amount})
+    } catch (error) {
+        throw error;
+    }
+}
 
+export const withdrawRequest = async (shiftId, {amount, reason})=> {
+    try {
+        const data = await axios.post(`/cashier/withdraw/${shiftId}`, {amount, reason})
+    } catch (error) {
+        throw error;
+    }
+}

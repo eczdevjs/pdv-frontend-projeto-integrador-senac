@@ -76,8 +76,6 @@ export const CashierSubContainer = styled.div`
 export const MainContainer = styled.div`
 
 
-
-
 `
 
 export const TabNav = styled.div`
@@ -87,6 +85,7 @@ export const TabNav = styled.div`
   border-bottom: 2px solid #ddd;
   padding-bottom: 10px;
 `
+
 export const TabButton = styled.button`
   background: ${props => (props.active ? '#034bf4' : 'transparent')};
   color: ${props => (props.active ? '#fff' : '#666')};
@@ -102,48 +101,6 @@ export const TabButton = styled.button`
 `
 
 
-export const Overlay = styled.div`
-  position: fixed;
-  top:0;
-  left:0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-`
-
-export const Modal = styled.div`
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-
-  h2 {
-    margin-bottom: 20px;
-  }
-
-  input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 20px;
-    border : 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  .actions {
-    display: flex;
-    justify-content: flex-end
-    gap: 10px;
-  }
-
-`
-
 export const Button = styled.button`
 padding: 10px 20px;
 cursor: pointer;
@@ -152,5 +109,4 @@ border-radius: 4px;
 font-weight: bold;
 background : ${props => props.confirm ? '#038bf4': '#ccc'};
 color:  ${props => props.confirm ? '#fff': '#333'};
-
 `

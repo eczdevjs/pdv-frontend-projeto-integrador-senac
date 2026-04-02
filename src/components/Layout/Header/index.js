@@ -1,11 +1,11 @@
 import React from "react";
 import { Nav , ToggleBtn} from "./styled";
-import * as colors from '../../config/colors';
+import * as colors from '../../../config/colors';
 import { SlHome, SlUser, SlPower, SlPeople, SlTag, SlLogout, SlSocialDropbox, SlDrawer, SlNote , SlMenu} from 'react-icons/sl';
 import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import * as actions from '../../store/modules/auth/actions';
-import history from "../../services/history";
+import * as actions from '../../../store/modules/auth/actions';
+import history from "../../../services/history";
 
 
 

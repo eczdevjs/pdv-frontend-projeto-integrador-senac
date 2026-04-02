@@ -5,7 +5,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import store, { persistor } from "./store";
 import { CashierProvider } from "./Context/CashierContext";
 import history from "./services/history";
-import Header from "./components/Header";
+import Header from "./components/Layout/Header";
 import { Router } from "react-router-dom";
 import Routes from "./routes";
 

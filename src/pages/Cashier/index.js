@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from '../../services/axios';
-import { Container } from "../../styles/GlobalStyle";
-import { CashierContainer, CashierSubContainer, MainContainer, TabButton, TabNav, Modal, Overlay, Button } from "./styled";
-import { get } from 'lodash';
-import { FaUserCircle, FaEdit, FaWindowClose } from 'react-icons/fa';
 import { toast } from "react-toastify";
 import Loading from "../../components/Loading";
-
+import { Modal } from "../../components/Layout/Modal";
+// import { Button } from "../../components/Layout/Modal/styled";
 import { useCashier } from "../../Context/CashierContext";
-
+import {
+  CashierContainer,
+  CashierSubContainer,
+  MainContainer,
+  TabButton,
+  TabNav
+} from "./styled";
+import { CashierModalManager } from "../../components/Layout/CashierModals";
 
 export default function Cashier() {
 
@@ -22,18 +24,24 @@ export default function Cashier() {
   const [transactions, setTransactions] = useState([]);
   const [totalSales, setTotalSales] = useState(0);
   const [finalBalance, setFinalBalance] = useState(0);
-  const [showModal, setShowModal] = useState(false);
   const [openingBalance, setOpeningBalance] = useState(0);
   const [balances, setBalances] = useState([]);
+  const [modalType, setModalType] = useState('');
 
-  const { handleOpenCashier, handleCloseCashier, handleGetShift, isCashierOpen, handleGetTransactions , handleGetBalances} = useCashier();
+  const {
+    handleOpenCashier, handleCloseCashier,
+    handleGetShift,
+    isCashierOpen, handleGetTransactions, handleGetBalances,
+    handleDeposit,
+    handleWithdraw
+  } = useCashier();
 
 
   React.useEffect(() => {
 
     const storedId = localStorage.getItem('activeShiftId');
 
-    if (storedId) {
+    if (storedId && !modalType) {
       const shiftId = Number(storedId);
 
       async function getShift() {
@@ -62,79 +70,44 @@ export default function Cashier() {
       }
       getShift();
     }
-  }, [handleGetShift, handleGetTransactions]);
+  }, [handleGetShift, handleGetTransactions, modalType]);
 
 
-  function handleModalOpeningCashier() {
-    setShowModal(true);
-  }
-
-  function confirmOpeningCashier() {
-    console.log('Opening cashier with: ', openingBalance);
-
+  const handleConfirmAction = async (data) => {
+    console.log("O valor vindo do modal e: ", data);
     setIsLoading(true);
-    async function getData() {
-      try {
-        const data = await handleOpenCashier(openingBalance);
-        console.log(data);
-        setOpenedAt(data.startTime);
-        setInitialBalance(data.openingBalance);
-        toast.success('Cashier opened');
-        setIsLoading(false);
-        setShowModal(false);
-        return data;
-      } catch (e) {
-
-        setIsLoading(false);
-        setShowModal(false);
-        const errorMessage = e.response?.data?.msg || 'Unexpected error'
-        console.log(e);
-        toast.error(errorMessage, { autoClose: 4000 });
+    try {
+      if (modalType === 'OPEN_CASHIER') {
+        const response = await handleOpenCashier(data);
+        setOpenedAt(response.openingBalance);
+        setInitialBalance(response.openingBalance);
+        toast.success('Caixa aberto');
+        setModalType('');
       }
-    }
-    getData();
-  }
 
-
-
-  function handleModalClosingCashier() {
-    setShowModal(true);
-  }
-
-  function confirmClosingCashier() {
-
-    async function getData() {
-      try {
-
-        const data = await handleCloseCashier(closingBalance);
-        toast.success('Cashier Closed');
-        setIsLoading(false);
-        setShowModal(false);
-        return data;
-      } catch (error) {
-
-        setIsLoading(false);
-        setShowModal(false);
-        const errorMessage = error.response?.data?.msg || 'Unexpected error'
-        console.log(error)
-        console.log(error.response);
-        toast.error(errorMessage, { autoClose: 4000 });
+      if (modalType === 'CLOSE_CASHIER') {
+        await handleCloseCashier(data);
+        setModalType('')
+        toast.success('Caixa fechado');
       }
+
+      if (modalType === 'DEPOSIT') {
+        await handleDeposit(data);
+        setModalType('');
+        toast.success('Deposito realizado');
+      }
+
+      if (modalType === 'WITHDRAW') {
+        await handleWithdraw(data);
+        setModalType('');
+        toast.success('Saque realizado');
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.msg || 'Unexpected error';
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    getData();
-  }
-
-
-  function handleCashierHistory() {
-
-  }
-
-  function handleAddCash() {
-
-  }
-
-  function handleWithdraw() {
-
   }
 
 
@@ -142,28 +115,18 @@ export default function Cashier() {
     <MainContainer>
       <Loading isLoading={isLoading} />
 
-      {showModal && (<Overlay>
-        <Modal>
-          <h2>{isCashierOpen ? 'Close Cashier' : "Open Cashier"}</h2>
-          <p>{isCashierOpen ? "Enter final balance" : 'Enter final balance'}</p>
-          <input
-            type="number"
-            placeholder="R$ 0,00"
-            value={isCashierOpen ? closingBalance : openingBalance}
-            onChange={(e) => isCashierOpen ? setClosingBalance(e.target.value) : setOpeningBalance(e.target.value)}
-            autoFocus
-          />
-          <div className="actions">
-            <Button onClick={() => setShowModal(false)}>Cancel</Button>
-
-            <Button confirm onClick={
-              () => isCashierOpen ? confirmClosingCashier() : confirmOpeningCashier()}>
-              Confirm</Button>
-          </div>
+      {modalType && (
+        <Modal showModal={!!modalType}>
+          <CashierModalManager
+            modalType={modalType}
+            onCancel={() => setModalType(null)}
+            onConfirm={(data) => handleConfirmAction(data)}
+            isCashierOpen={isCashierOpen}
+          >
+          </CashierModalManager>
         </Modal>
-      </Overlay>
-      )
-      }
+      )}
+
       <TabNav>
         <TabButton
           active={activeTab === 'current'}
@@ -180,74 +143,82 @@ export default function Cashier() {
         </TabButton>
       </TabNav>
 
-      {activeTab === 'current' && (<CashierContainer>
-        <CashierSubContainer>
-          <h1>Cash Summary</h1>
-          <div>
-            <span className="label">Opened at: </span>
-            <span className="value"> {openedAt ? openedAt : ''} </span>
-          </div>
+      {activeTab === 'current' && (
+        <CashierContainer>
+          <CashierSubContainer>
 
-          <div>
-            <span className="label" >Initial balance: </span>
-            <span className="value">R${initialBalance ? initialBalance : ''} </span>
-          </div>
+            <h1>Cash Summary</h1>
 
-          <div>
-            <span className="label" >Total Sales: </span>
-            <span className="value">{totalSales ? totalSales : `R$ ${0}`} </span>
-          </div>
+            <div>
+              <span className="label">Opened at: </span>
+              <span className="value"> {openedAt ? openedAt : ''} </span>
+            </div>
 
-          <div>
-            <span className="label" >Final Balance: </span>
-            <span className="value">{finalBalance ? finalBalance : `R$ 0`} </span>
-          </div>
+            <div>
+              <span className="label" >Initial balance: </span>
+              <span className="value">R${initialBalance ? initialBalance : ''} </span>
+            </div>
 
-          <div style={{ display: 'flex', gap: '10px', marginTop: '15px', padding: '10px' }}>
-            <button>Add Cash</button>
-            <button>Withdraw</button>
-          </div>
-        </CashierSubContainer>
+            <div>
+              <span className="label" >Total Sales: </span>
+              <span className="value">{totalSales ? totalSales : `R$ ${0}`} </span>
+            </div>
 
-        <CashierSubContainer>
-          <h1>Filtered by Payment</h1>
-        {balances.length > 0 ? (
-           balances.map((item, index) => 
-            (<div key={`${item.paymentMethod}-${index}`} className="trasaction-item">
-              <div className="info">
-                <h3><strong> {item.name}</strong></h3>
-                <h2><small> {item.payment.name}</small></h2>
-              </div>
-              <div className="value">
-                {new Intl.NumberFormat('pt-BR',{style: "currency",currency: 'BRL'}).format(item.amount)}
-              </div>
+            <div>
+              <span className="label" >Final Balance: </span>
+              <span className="value">{finalBalance ? finalBalance : `R$ 0`} </span>
+            </div>
 
-            </div>)
-           )
-          ) : (<p>No transactions found.</p>)}
-        </CashierSubContainer>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '15px', padding: '10px' }}>
+              <button onClick={() => setModalType('DEPOSIT')}>Add Cash</button>
+              <button onClick={() => { setModalType('WITHDRAW') }}>Withdraw</button>
+            </div>
+          </CashierSubContainer>
 
-        <CashierSubContainer>
-          <h2>Transactions</h2>
-          
-          {transactions.length > 0 ? (
-           transactions.map((item, index) => 
-            (<div key={`${item.paymentMethod}-${index}`} className="trasaction-item">
-              <div className="info">
-                <strong>{item.type.name}</strong>
-                <small> {item.payment.name}</small>
-              </div>
-              <div className="value">
-                {new Intl.NumberFormat('pt-BR',{style: "currency",currency: 'BRL'}).format(item.totalAmount || item.amount)}
-              </div>
+          <CashierSubContainer>
+            <h1>Filtered by Payment</h1>
 
-            </div>)
-           )
-          ) : (<p>No transactions found.</p>)}
+            {balances.length > 0 ? (
+              balances.map((item, index) =>
+              (<div key={`${item.paymentMethod}-${index}`} className="trasaction-item">
+                <div className="info">
+                  <h3><strong> {item.name}</strong></h3>
+                  <h2><small> {item.payment.name}</small></h2>
+                </div>
+                <div className="value">
+                  {new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(item.amount)}
+                </div>
 
-          <button onClick={isCashierOpen ? handleModalClosingCashier : handleModalOpeningCashier}>{isCashierOpen ? 'Close Cashier' : 'Open Cashier'}</button>
-        </CashierSubContainer>
-      </CashierContainer>)}
+              </div>)
+              )
+            ) : (
+              <p>No transactions found.</p>
+            )}
+          </CashierSubContainer>
+
+          <CashierSubContainer>
+
+            <h2>Transactions</h2>
+
+            {transactions.length > 0 ? (
+              transactions.map((item, index) =>
+              (<div key={`${item.paymentMethod}-${index}`} className="trasaction-item">
+                <div className="info">
+                  <strong>{item.type.name}</strong>
+                  <small> {item.payment.name}</small>
+                </div>
+                <div className="value">
+                  {new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(item.totalAmount || item.amount)}
+                </div>
+
+              </div>)
+              )
+            ) : (<p>No transactions found.</p>)}
+
+            <button onClick={isCashierOpen ? () => setModalType('CLOSE_CASHIER')
+              : () => setModalType('OPEN_CASHIER')}>{isCashierOpen ? 'Close Cashier' : 'Open Cashier'}</button>
+          </CashierSubContainer>
+        </CashierContainer>)}
 
       {activeTab === 'previous' && (
         <CashierContainer>
