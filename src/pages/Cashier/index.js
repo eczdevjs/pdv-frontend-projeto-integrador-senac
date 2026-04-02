@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
 import Loading from "../../components/Loading";
 import { Modal } from "../../components/Layout/Modal";
-// import { Button } from "../../components/Layout/Modal/styled";
 import { useCashier } from "../../Context/CashierContext";
 import {
   CashierContainer,
@@ -20,13 +19,18 @@ export default function Cashier() {
   const [isLoading, setIsLoading] = useState(false);
   const [openedAt, setOpenedAt] = useState('');
   const [initialBalance, setInitialBalance] = useState(0);
-  const [closingBalance, setClosingBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [totalSales, setTotalSales] = useState(0);
   const [finalBalance, setFinalBalance] = useState(0);
-  const [openingBalance, setOpeningBalance] = useState(0);
   const [balances, setBalances] = useState([]);
   const [modalType, setModalType] = useState('');
+  const [totalDeposits, setTotalDeposits] = useState(0);
+  const [totalWithdraw, setTotalWithdraw] = useState(0);
+
+  const dateFormatter = new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'short',
+    timeStyle: 'short'
+  });
 
   const {
     handleOpenCashier, handleCloseCashier,
@@ -35,7 +39,6 @@ export default function Cashier() {
     handleDeposit,
     handleWithdraw
   } = useCashier();
-
 
   React.useEffect(() => {
 
@@ -48,19 +51,31 @@ export default function Cashier() {
 
         setIsLoading(true);
         try {
-          const data = await handleGetShift(shiftId);
 
-          const { openingBalance, startTime } = data;
+          const [shiftData, transactionData, balancesData] = await Promise.all([
+            handleGetShift(shiftId),
+            handleGetTransactions(shiftId),
+            handleGetBalances(shiftId)
+          ]);
+
+          const { openingBalance, startTime } = shiftData;
           setOpenedAt(startTime);
           setInitialBalance(openingBalance);
-
-          const transactionData = await handleGetTransactions(shiftId);
-          console.log('Dados brutos api: ', transactionData);
           setTransactions(transactionData);
-
-          const balancesData = await handleGetBalances(shiftId);
           setBalances(balancesData);
-          console.log("balances data: ", balancesData);
+
+          const totals = transactionData.reduce((acc, t) => {
+            const amount = Number(t.amount) || 0;
+            if (t.type.name === 'DEPOSIT') acc.deposits += amount;
+            if (t.type.name === 'WITHDRAW') acc.withdraw += amount;
+            return acc;
+          }, { deposits: 0, withdraw: 0 });
+
+          setTotalDeposits(totals.deposits);
+          setTotalWithdraw(totals.withdraw);
+
+          const calculatedFinal = Number(openingBalance) + totals.deposits + totals.withdraw;
+          setFinalBalance(calculatedFinal);
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
@@ -72,9 +87,8 @@ export default function Cashier() {
     }
   }, [handleGetShift, handleGetTransactions, modalType]);
 
-
   const handleConfirmAction = async (data) => {
-    console.log("O valor vindo do modal e: ", data);
+   
     setIsLoading(true);
     try {
       if (modalType === 'OPEN_CASHIER') {
@@ -150,8 +164,8 @@ export default function Cashier() {
             <h1>Cash Summary</h1>
 
             <div>
-              <span className="label">Opened at: </span>
-              <span className="value"> {openedAt ? openedAt : ''} </span>
+              <span className="label">Opening: </span>
+              <span className="value"> {openedAt ? dateFormatter.format(new Date(openedAt)) : ''} </span>
             </div>
 
             <div>
@@ -160,13 +174,23 @@ export default function Cashier() {
             </div>
 
             <div>
-              <span className="label" >Total Sales: </span>
-              <span className="value">{totalSales ? totalSales : `R$ ${0}`} </span>
+              <span className="label" >Total Deposits: </span>
+              <span className="value">{totalDeposits ? totalDeposits : `R$ ${0}`} </span>
             </div>
 
             <div>
-              <span className="label" >Final Balance: </span>
-              <span className="value">{finalBalance ? finalBalance : `R$ 0`} </span>
+              <span className="label" >Withdraws: </span>
+              <span className="value">{totalWithdraw ? totalWithdraw : `R$ ${0}`} </span>
+            </div>
+
+            <div>
+              <span className="label" >Total Sales: </span>
+              <span className="value">{totalSales ? totalSales : 0} </span>
+            </div>
+
+            <div>
+              <span className="label" ><strong>Final Balance:</strong> </span>
+              <span className="value"><strong>{finalBalance ? finalBalance : `R$ 0`}</strong> </span>
             </div>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '15px', padding: '10px' }}>
@@ -176,7 +200,8 @@ export default function Cashier() {
           </CashierSubContainer>
 
           <CashierSubContainer>
-            <h1>Filtered by Payment</h1>
+
+            <h1>Payment Method</h1>
 
             {balances.length > 0 ? (
               balances.map((item, index) =>
@@ -219,6 +244,7 @@ export default function Cashier() {
               : () => setModalType('OPEN_CASHIER')}>{isCashierOpen ? 'Close Cashier' : 'Open Cashier'}</button>
           </CashierSubContainer>
         </CashierContainer>)}
+
 
       {activeTab === 'previous' && (
         <CashierContainer>
