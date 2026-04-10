@@ -1,82 +1,96 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { Container } from "../../styles/GlobalStyle";
-import { Form, Title } from './styled';
-import Loading from '../../components/Loading';
+import React, { use, useState } from "react";
+import Select from 'react-select';
 import axios from '../../services/axios';
-import history from '../../services/history';
-import { get } from "lodash";
+import { useDispatch } from "react-redux";
+import { Container, TabNav, TabButton } from "../../styles/GlobalStyle";
+import Loading from '../../components/Loading';
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 import * as actions from '../../store/modules/auth/actions'
-
+import { useCashier } from "../../Context/CashierContext";
+import { Modal } from "../../components/Layout/Modal";
+import NewSale from "../../components/Layout/Sale";
 
 
 
 export default function Sales({ match }) {
+
+  const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
-  const id = get(match, 'params.id', '');
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [photo, setPhoto] = React.useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [historySales, setHistorySales] = useState([]);
+  const { isCashierOpen, shiftId } = useCashier();
 
-  // React.useEffect(() => {
-  //   async function getData() {
-  //     try {
-  //       setIsLoading(true);
-  //       const { data } = axios.get(`/alunos/${id}`);
-  //       setPhoto(get(data, 'Fotos[0].url', ''));
-  //       setIsLoading(false);
-  //     } catch (error) {
-  //       setIsLoading(false);
-  //       toast.error('Error fetching image, redirecting ...');
-  //     }
-  //   }
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [productId, setProductId] = useState({});
+  const [order, setOrder] = useState({})
+  const [qtt, setQtt] = useState(1);
+  const [suborder, setSuborder] = useState([]);
 
-  //   getData();
-  // }, [])
 
-  async function handleChange(e) {
+  React.useEffect(() => {
 
-    const selectedPhoto = e.target.files[0];
-    const photoUrl = URL.createObjectURL(selectedPhoto);
-    console.log(photoUrl);
-    setPhoto(photoUrl);
-
-    const formData = new FormData();
-    formData.append('aluno_id', id);
-    formData.append('foto', selectedPhoto);
-
-    try {
-      setIsLoading(true);
-      axios.post('/fotos/', formData, {
-        headers: {
-          "Content-Type": `multipart/form-data`
+    async function getData() {
+      console.log(historySales);
+      console.log('isCashierOpen', isCashierOpen);
+      if (isCashierOpen) {
+        try {
+          setIsLoading(true);
+          const { data } = axios.get(`/sales/list/daily/${shiftId}`);
+          setHistorySales(data);
+          toast.success('Sales history restablised');
+          console.log('Data history: ')
+          console.log(data);
+          setIsLoading(false);
+        } catch (error) {
+          setIsLoading(false);
+          if (error.response.status == 401) {
+            dispatch(actions.loginFailure());
+          }
+          toast.error('Error fetching sale history');
         }
-      })
-      toast.success('Photo updated');
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      const {status} = get(error, 'response', '');
-
-      if (status === 401) dispatch(actions.loginFailure());
-      toast.error('Credential failure : You are supposed to log in');
-      history.push('/login');
+      }
     }
-  }
+
+    getData();
+  }, [])
+
+
 
   return (
-    <Container>
-      <h1>Sales Page</h1>
-      {/* <Loading isLoading={isLoading} />
-      <Title>Photos Page</Title>
-      <Form>
-        <label htmlFor="photo">
-          {photo ? <img src={photo} alt="Profile photo" /> : 'Select'}
-          <input type="file" id="photo" onChange={handleChange}></input>
-        </label>
-      </Form> */}
-    </Container>
+    <>
+
+      <Container>
+        <Loading isLoading={isLoading} />
+        {
+          showModal && (
+            <Modal showModal={showModal}>
+              <NewSale onCancel={() => setShowModal(false)} onConfirm={() => {
+                setSuborder([...suborder, { productId, qtt, total }])
+                setProductId('');
+                setQtt(0);
+                setTotal(0);
+              }} />
+
+            </Modal>)
+        }
+        <h1>Sales Page</h1>
+        <TabNav>
+          <button onClick={() => {
+            setShowModal(true);
+          }}>New Sale</button>
+        </TabNav>
+
+        <Container>
+          <p>Sales history</p>
+          {historySales.length > 0 ? (<p>Ha vendas</p>) : (<p>There is not history for current cashier</p>)}
+        </Container>
+      </Container>
+
+
+    </>
+
   );
 }
 
