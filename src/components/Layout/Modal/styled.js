@@ -7,7 +7,7 @@ export const Container = styled.div`
   width: 100%;
   max-width: 400px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-
+  overflow-y: scrow;
   h2 {
     margin-bottom: 20px;
   }
