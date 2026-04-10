@@ -1,0 +1,151 @@
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import Select from 'react-select';
+import axios from "../../../services/axios";
+
+
+export default function NewSale({ onConfirm, onCancel, }) {
+
+    const [suborders, setSuborders] = useState([]);
+    const [productList, setProductList] = useState([]);
+    const [productPrice, setProductPrice] = useState(0);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const [qtt, setQtt] = useState(1);
+    const [totalOrder, setTotalOrder] = useState(0);
+    const [subtotal, setSubtotal] = useState(0);
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                const { data } = await axios.get('/products');
+                setProductList(data);
+                console.log(data);
+            } catch (error) {
+                console.log(error);
+                toast.error('Error fetching products')
+            }
+        }
+
+        getData();
+    }, []);
+
+
+    function handleAddCart(){
+
+        if(!selectedProduct){
+            toast.error('Select product before add!', {autoClose: 5000});
+            return;
+        }
+
+        const newItem = {
+            productId: selectedProduct.id,
+            name: selectedProduct.name,
+            productPrice: selectedProduct.price,
+            qtt: qtt,
+            total: selectedProduct.price * qtt
+        }
+
+        setSuborders([...suborders, newItem]);
+        const newTotal = totalOrder + newItem.total;
+        setTotalOrder(newTotal);
+
+        setSelectedProduct(null);
+        setProductPrice(0);
+        setQtt(1);
+    }
+
+
+    return (<>
+        <div style={{"overflow": 'scroll'}}>
+         
+            <Select
+                value={selectedProduct}
+                options={productList}
+                onChange={(selected, actionMeta) => {
+                    setSelectedProduct(selected);
+                    if (selected) {
+                        setProductPrice(selected.price);
+                        const sub = qtt * selected.price;
+                        setSubtotal(sub);
+                        
+                    }
+
+                    if (actionMeta.action === 'clear') {
+                        setProductPrice(0);
+                    }
+                }}
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.id}
+                placeholder="Pick product up"
+                isClearable
+                noOptionsMessage={() => "No product found"}
+            />
+
+            <input onChange={e => {
+                setQtt(e.target.value);
+                let sub  = productPrice * e.target.value;
+                setSubtotal(sub);
+                }}  value={qtt} type="number" min={1}  placeholder="Enter quantity"></input>
+
+            <span placeholder="Total order"></span>
+
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+                <span style={{padding: '4px', marginBottom: '4px'
+                }}placeholder="Price">Price R$ {productPrice}</span>
+
+                <span style={{padding: '4px', marginBottom: '4px'
+                }} placeholder="Subtotal">Subtotal R$ {subtotal}</span>
+
+                <span style={{padding: '4px', marginBottom: '4px'
+                }} placeholder="Price"><strong>Total R$ {totalOrder}</strong></span>
+
+            </div>
+
+            <div className="actions">
+                <button onClick={handleAddCart}>Add</button>
+
+                <button onClick={onCancel}>Cancel</button>
+            </div>
+
+            <div>
+                <table>
+                    <th>Code</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Qtt</th>
+                    <th>Subtotal</th>
+                    <th>Action</th>
+                    <tbody>
+                        {suborders.length > 0 ? (suborders.map((item) => (
+                            
+                            <tr>
+                                <td>
+                                    {item.productId}
+                                </td>
+                                <td>
+                                    {item.name}
+                                </td>
+                                <td>
+                                    {item.productPrice}
+                                </td>
+                                <td>
+                                    {item.qtt}
+                                </td>
+                                <td>
+                                    {item.total}
+                                </td>
+
+                                <td>
+                                    <button>delete</button>
+                                </td>
+                            </tr>
+
+                        ))) : (<p></p>)}
+                    </tbody>
+                </table>
+            </div>
+            {suborders.length > 0 ? (<button>Chechout</button>) : (<></>)}
+        </div>
+    </>)
+}
