@@ -65,3 +65,17 @@ export const withdrawRequest = async (shiftId, {amount, reason})=> {
         throw error;
     }
 }
+
+export const previousShiftsRequest = async (initialDate, endDate)=> {
+    try {
+        const {data}  = await axios.get('/cashier/shifts/filter',{
+        params: {
+            initialDate,
+            endDate
+        }
+    });
+    return data;
+    } catch (error) {
+        throw error;
+    }
+}
