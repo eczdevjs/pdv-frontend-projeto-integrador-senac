@@ -3,6 +3,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { primaryColor, primaryDarkColor, errorColor, successColor } from '../config/colors'
 import 'react-toastify/dist/ReactToastify.css'
 
+
 export default createGlobalStyle`
     *{
         margin: 0;
@@ -84,3 +85,28 @@ background-color: #f5f5f5;
 //   width: 100%;
 // }
 `
+
+export const TabNav = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom :20px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+`
+
+
+export const TabButton = styled.button`
+  background: ${props => (props.active ? '#034bf4' : 'transparent')};
+  color: ${props => (props.active ? '#fff' : '#666')};
+  border: ${props => (props.active ? 'none' : '1px solid #ccc')};
+  padding 10px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: all 0.3s;
+
+  &:hover{
+    background: ${props => (props.active ? '#038bf4' : '#e0e0e0')};
+  }
+`
+
+
