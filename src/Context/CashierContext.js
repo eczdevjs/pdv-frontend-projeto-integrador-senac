@@ -1,5 +1,15 @@
 import react, { createContext, useState, useContext } from 'react';
-import { openCashierRequest, closeCashierRequest, getShifRequest, getTransactionsRequest, getBalancesRequest, depositRequest, withdrawRequest } from '../services/CashierService';
+import {
+    openCashierRequest,
+    closeCashierRequest,
+    getShifRequest, 
+    getTransactionsRequest, 
+    getBalancesRequest, 
+    depositRequest, 
+    withdrawRequest, 
+    previousShiftsRequest
+ } from '../services/CashierService';
+
 const CashierContext = createContext();
 
 export const CashierProvider = ({ children }) => {
@@ -21,8 +31,8 @@ export const CashierProvider = ({ children }) => {
 
     const handleCloseCashier = async (amount) => {
         try {
-      
-            const data =  await closeCashierRequest(amount);
+
+            const data = await closeCashierRequest(amount);
             localStorage.removeItem('activeShiftId');
             setShiftId(null);
             setIsCashierOpen(false);
@@ -44,7 +54,7 @@ export const CashierProvider = ({ children }) => {
 
     const handleGetTransactions = async (shiftId) => {
         try {
-            const data  = await getTransactionsRequest(shiftId);
+            const data = await getTransactionsRequest(shiftId);
             return data;
         } catch (error) {
             throw error;
@@ -55,7 +65,7 @@ export const CashierProvider = ({ children }) => {
         try {
             const data = await getBalancesRequest(shiftId);
             return data
-        }catch(error){
+        } catch (error) {
             throw error;
         }
     }
@@ -63,16 +73,24 @@ export const CashierProvider = ({ children }) => {
     const handleDeposit = async (amount) => {
         try {
             const data = await depositRequest(shiftId, amount);
-
             return data;
         } catch (error) {
             throw error;
         }
     }
 
-    const handleWithdraw = async ({amount, reason}) => {
+    const handleWithdraw = async ({ amount, reason }) => {
         try {
-            const data = await withdrawRequest(shiftId, {amount, reason});
+            const data = await withdrawRequest(shiftId, { amount, reason });
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const handlePreviousShifts = async (initialDate, endDate) => {
+        try {
+            const data = await previousShiftsRequest(initialDate, endDate);
             return data;
         } catch (error) {
             throw error;
@@ -80,11 +98,19 @@ export const CashierProvider = ({ children }) => {
     }
 
 
-    return (<CashierContext.Provider value={{ 
-        shiftId, 
-        isCashierOpen, handleOpenCashier, handleCloseCashier, handleGetShift, handleGetTransactions, handleGetBalances, handleDeposit,
-        handleWithdraw
-     }}>
+
+    return (<CashierContext.Provider value={{
+        shiftId,
+        isCashierOpen,
+        handleOpenCashier, 
+        handleCloseCashier, 
+        handleGetShift, 
+        handleGetTransactions, 
+        handleGetBalances, 
+        handleDeposit,
+        handleWithdraw,
+        handlePreviousShifts
+    }}>
         {children}
     </CashierContext.Provider>)
 }
