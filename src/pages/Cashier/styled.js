@@ -110,3 +110,47 @@ font-weight: bold;
 background : ${props => props.confirm ? '#038bf4': '#ccc'};
 color:  ${props => props.confirm ? '#fff': '#333'};
 `
+
+
+export const TableContainer = styled.div`
+  width: 100%;
+  overflow-x: auto; /* Garante scroll no mobile */
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+`;
+
+export const StyledTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  font-family: sans-serif;
+  
+  thead {
+    background-color: #f8f9fa;
+    tr {
+      border-bottom: 2px solid #dee2e6;
+    }
+  }
+
+  th, td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: #f1f1f1;
+    }
+  }
+`;
+
+// Exemplo de célula com cor dinâmica via Props
+export const StatusCell = styled.td`
+  font-weight: bold;
+  color: ${props => props.value < 0 ? '#e74c3c' : '#2ecc71'};
+`;
