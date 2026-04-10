@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
+import{ useDispatch} from "react-redux";
 import { toast } from "react-toastify";
 import Loading from "../../components/Loading";
 import { Modal } from "../../components/Layout/Modal";
 import { useCashier } from "../../Context/CashierContext";
+import {loginFailure} from '../../store/modules/auth/actions'
 import {
   CashierContainer,
   CashierSubContainer,
@@ -10,12 +12,13 @@ import {
   TabButton,
   TabNav
 } from "./styled";
+
 import { CashierModalManager } from "../../components/Layout/CashierModals";
+
 
 export default function Cashier() {
 
   const [activeTab, setActiveTab] = useState('current');
-  // tenho que exportar o componente Loading e adicionar no retorno do componente
   const [isLoading, setIsLoading] = useState(false);
   const [openedAt, setOpenedAt] = useState('');
   const [initialBalance, setInitialBalance] = useState(0);
@@ -26,6 +29,9 @@ export default function Cashier() {
   const [modalType, setModalType] = useState('');
   const [totalDeposits, setTotalDeposits] = useState(0);
   const [totalWithdraw, setTotalWithdraw] = useState(0);
+  const [previousShifts, setPreviousShifts] = useState([]);
+
+  const dispatch = useDispatch();
 
   const dateFormatter = new Intl.DateTimeFormat('en-US', {
     dateStyle: 'short',
@@ -37,7 +43,8 @@ export default function Cashier() {
     handleGetShift,
     isCashierOpen, handleGetTransactions, handleGetBalances,
     handleDeposit,
-    handleWithdraw
+    handleWithdraw,
+    handlePreviousShifts
   } = useCashier();
 
   React.useEffect(() => {
@@ -79,6 +86,9 @@ export default function Cashier() {
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
+          if(e.response?.status === 401){
+            dispatch(loginFailure());
+          }
           console.log('erro no carregamento: ', e)
           toast.error("Nao foi possivel restaurar  a sessao caixa", { autoClose: 8000 });
         }
@@ -87,8 +97,9 @@ export default function Cashier() {
     }
   }, [handleGetShift, handleGetTransactions, modalType]);
 
+
   const handleConfirmAction = async (data) => {
-   
+
     setIsLoading(true);
     try {
       if (modalType === 'OPEN_CASHIER') {
@@ -151,7 +162,16 @@ export default function Cashier() {
 
         <TabButton
           active={activeTab === 'previous'}
-          onClick={() => setActiveTab('previous')}
+          onClick={async () => {
+            setActiveTab('previous');
+            try {
+              const data = await handlePreviousShifts('2026-03-01', '2026-04-02');
+              setPreviousShifts(data);
+            } catch (error) {
+              console.log(error);
+            }
+
+          }}
         >
           Previous Cashier
         </TabButton>
@@ -246,18 +266,60 @@ export default function Cashier() {
         </CashierContainer>)}
 
 
+
       {activeTab === 'previous' && (
-        <CashierContainer>
+
+        < CashierContainer >
           <CashierSubContainer style={{ maxWidth: '100%' }}>
             <h2>History of closed cashiers</h2>
-            <p>List of previous cashier transactions</p>
+            <h3>List of previous cashier transactions</h3>
+            {
 
+              <table border='1' style={{ width: '100%', textAlign: 'left' }}>
+                <thead>
+                  <tr>
+                    <th>
+                      Opened at
+                    </th>
+
+                    <th>
+                      Opening amount
+                    </th>
+
+                    <th>
+                      Closed at
+                    </th>
+
+                    <th>
+                      Closing amount
+                    </th>
+                    <th>
+                      Difference
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    previousShifts ? previousShifts.map(item => (
+                      <tr key={item.id} >
+                        <td>{dateFormatter.format(new Date(item.startTime))}</td>
+                        <td>R$ {item.openingBalance}</td>
+                        <td>{dateFormatter.format(new Date(item.endTime))}</td>
+                        <td>{item.closingBalance}</td>
+                        <td>{item.difference}</td>
+                      </tr>
+                    )) : (<p>No data</p>)
+                  }
+                </tbody>
+              </table>
+
+            }
+            <div className="actions">
+              <button>Filter</button>
+            </div>
           </CashierSubContainer>
-        </CashierContainer>
-      )}
-    </MainContainer>
-  );
-
+        </CashierContainer>)}
+    </MainContainer >);
 }
 
 
