@@ -84,7 +84,7 @@ export default function Sales({ match }) {
 
         <Container>
           <p>Sales history</p>
-          {historySales.length > 0 ? (<p>Ha vendas</p>) : (<p>There is not history for current cashier</p>)}
+          {historySales && historySales.length > 0 ? (<p>Ha vendas</p>) : (<p>There is not history for current cashier</p>)}
         </Container>
       </Container>
 

@@ -31,10 +31,10 @@ export default function NewSale({ onConfirm, onCancel, }) {
     }, []);
 
 
-    function handleAddCart(){
+    function handleAddCart() {
 
-        if(!selectedProduct){
-            toast.error('Select product before add!', {autoClose: 5000});
+        if (!selectedProduct) {
+            toast.error('Select product before add!', { autoClose: 5000 });
             return;
         }
 
@@ -55,10 +55,23 @@ export default function NewSale({ onConfirm, onCancel, }) {
         setQtt(1);
     }
 
+    useEffect(() => console.log(suborders), [suborders]);
+
+    function handleDeleteItem(index) {
+        const newTotal = totalOrder - suborders[index].total
+        const arr = suborders.filter((_, i) => i != index);
+        setSuborders(arr);
+        setTotalOrder(newTotal);
+        setSubtotal(0);
+    }
+
+    function handleCheckout() {
+
+    }
 
     return (<>
-        <div style={{"overflow": 'scroll'}}>
-         
+        <div style={{ "overflow": 'scroll' }}>
+
             <Select
                 value={selectedProduct}
                 options={productList}
@@ -68,7 +81,7 @@ export default function NewSale({ onConfirm, onCancel, }) {
                         setProductPrice(selected.price);
                         const sub = qtt * selected.price;
                         setSubtotal(sub);
-                        
+
                     }
 
                     if (actionMeta.action === 'clear') {
@@ -84,20 +97,23 @@ export default function NewSale({ onConfirm, onCancel, }) {
 
             <input onChange={e => {
                 setQtt(e.target.value);
-                let sub  = productPrice * e.target.value;
+                let sub = productPrice * e.target.value;
                 setSubtotal(sub);
-                }}  value={qtt} type="number" min={1}  placeholder="Enter quantity"></input>
+            }} value={qtt} type="number" min={1} placeholder="Enter quantity"></input>
 
             <span placeholder="Total order"></span>
 
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-                <span style={{padding: '4px', marginBottom: '4px'
-                }}placeholder="Price">Price R$ {productPrice}</span>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{
+                    padding: '4px', marginBottom: '4px'
+                }} placeholder="Price">Price R$ {productPrice}</span>
 
-                <span style={{padding: '4px', marginBottom: '4px'
+                <span style={{
+                    padding: '4px', marginBottom: '4px'
                 }} placeholder="Subtotal">Subtotal R$ {subtotal}</span>
 
-                <span style={{padding: '4px', marginBottom: '4px'
+                <span style={{
+                    padding: '4px', marginBottom: '4px'
                 }} placeholder="Price"><strong>Total R$ {totalOrder}</strong></span>
 
             </div>
@@ -110,17 +126,22 @@ export default function NewSale({ onConfirm, onCancel, }) {
 
             <div>
                 <table>
-                    <th>Code</th>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Qtt</th>
-                    <th>Subtotal</th>
-                    <th>Action</th>
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Qtt</th>
+                            <th>Subtotal</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
                     <tbody>
-                        {suborders.length > 0 ? (suborders.map((item) => (
-                            
-                            <tr>
-                                <td>
+                        {suborders.length > 0 ? (suborders.map((item, index) => (
+
+                            <tr key={item.productId}>
+                                <td >
                                     {item.productId}
                                 </td>
                                 <td>
@@ -137,7 +158,10 @@ export default function NewSale({ onConfirm, onCancel, }) {
                                 </td>
 
                                 <td>
-                                    <button>delete</button>
+                                    <button onClick={() => {
+                                        handleDeleteItem(index)
+                                        console.log('Delete clicked, index=', index)
+                                    }}>delete</button>
                                 </td>
                             </tr>
 
