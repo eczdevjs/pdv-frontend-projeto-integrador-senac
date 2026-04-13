@@ -39,9 +39,12 @@ export default function Cashier() {
   });
 
   const {
-    handleOpenCashier, handleCloseCashier,
+    handleOpenCashier, 
+    handleCloseCashier,
     handleGetShift,
-    isCashierOpen, handleGetTransactions, handleGetBalances,
+    isCashierOpen, 
+    handleGetTransactions, 
+    handleGetBalances,
     handleDeposit,
     handleWithdraw,
     handlePreviousShifts
@@ -75,13 +78,15 @@ export default function Cashier() {
             const amount = Number(t.amount) || 0;
             if (t.type.name === 'DEPOSIT') acc.deposits += amount;
             if (t.type.name === 'WITHDRAW') acc.withdraw += amount;
+            if(t.type.name === 'SALE') acc.sales += amount;
             return acc;
-          }, { deposits: 0, withdraw: 0 });
+          }, { deposits: 0, withdraw: 0 , sales: 0});
 
           setTotalDeposits(totals.deposits);
           setTotalWithdraw(totals.withdraw);
+          setTotalSales(totals.sales);
 
-          const calculatedFinal = Number(openingBalance) + totals.deposits + totals.withdraw;
+          const calculatedFinal = Number(openingBalance) + totals.deposits + totals.withdraw + totals.sales;
           setFinalBalance(calculatedFinal);
           setIsLoading(false);
         } catch (e) {
@@ -195,17 +200,17 @@ export default function Cashier() {
 
             <div>
               <span className="label" >Total Deposits: </span>
-              <span className="value">{totalDeposits ? totalDeposits : `R$ ${0}`} </span>
+              <span className="value">R$ {totalDeposits ? totalDeposits : `R$ ${0}`} </span>
             </div>
 
             <div>
               <span className="label" >Withdraws: </span>
-              <span className="value">{totalWithdraw ? totalWithdraw : `R$ ${0}`} </span>
+              <span className="value">R$ {totalWithdraw ? totalWithdraw : `R$ ${0}`} </span>
             </div>
 
             <div>
               <span className="label" >Total Sales: </span>
-              <span className="value">{totalSales ? totalSales : 0} </span>
+              <span className="value">R$ {totalSales ? totalSales : 0} </span>
             </div>
 
             <div>

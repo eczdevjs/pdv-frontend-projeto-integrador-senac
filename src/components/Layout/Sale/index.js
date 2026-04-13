@@ -2,10 +2,17 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Select from 'react-select';
 import axios from "../../../services/axios";
-
+import { useCashier } from "../../../Context/CashierContext";
+import {SlArrowRight} from 'react-icons/sl'
 
 export default function NewSale({ onConfirm, onCancel, }) {
+    const [order, setOrder] = useState({});
 
+    const { isCashierOpen, shiftId } = useCashier();
+    console.log("isCashierOpen: ", isCashierOpen, 'shiftId = ', shiftId);
+    const [activeModal, setActiveModal] = useState('newSale');
+    const [paymentMethods, setPaymentMetohds] = useState([]);
+    const [selectedPayment, setSelectedPayment] = useState(null);
     const [suborders, setSuborders] = useState([]);
     const [productList, setProductList] = useState([]);
     const [productPrice, setProductPrice] = useState(0);
@@ -20,6 +27,9 @@ export default function NewSale({ onConfirm, onCancel, }) {
             try {
                 const { data } = await axios.get('/products');
                 setProductList(data);
+                const response = await axios.get('/paymentmethod/list');
+                const methods = response.data;
+                setPaymentMetohds(methods);
                 console.log(data);
             } catch (error) {
                 console.log(error);
@@ -55,6 +65,53 @@ export default function NewSale({ onConfirm, onCancel, }) {
         setQtt(1);
     }
 
+
+    /// context do cashier context para saber se o shiftId existe
+    function handleConfirmNewSale() {
+
+        async function createSale() {
+
+            if (isCashierOpen) {
+                try {
+                    const response = await axios.post('sales/create', order);
+                    console.log(response);
+                    console.log("order: ", order);
+
+                    toast.success('Sale Succeed');
+                    onCancel();
+
+
+                } catch (error) {
+                    toast.error('Error creating sale register');
+                    console.log("error creating sale: ", error);
+                }
+            } else {
+                toast.error("Cahier has not been opened, open it and try again");
+            }
+        }
+
+        createSale();
+
+        //     const sale = {
+        //         "totalOrder": 419.40,
+        //         "paymentMethodId": 1,
+        //     }
+
+
+        //    const cart =  suborders: [{
+        //         "productId": 1,
+        //         "qtt": 1,
+        //         "productPrice": 299.90,
+        //         "total": 299.90
+        //     }, {
+        //         "productId": 2,
+        //         "qtt": 1,
+        //         "productPrice": 119.50,
+        //         "total": 119.50
+        //     }]
+    }
+
+
     useEffect(() => console.log(suborders), [suborders]);
 
     function handleDeleteItem(index) {
@@ -69,8 +126,8 @@ export default function NewSale({ onConfirm, onCancel, }) {
 
     }
 
-    return (<>
-        <div style={{ "overflow": 'scroll' }}>
+    return (
+        activeModal == "newSale" ? (<div style={{ "overflow": "scroll" }}>
 
             <Select
                 value={selectedProduct}
@@ -169,7 +226,79 @@ export default function NewSale({ onConfirm, onCancel, }) {
                     </tbody>
                 </table>
             </div>
-            {suborders.length > 0 ? (<button>Chechout</button>) : (<></>)}
-        </div>
-    </>)
+            {
+                suborders.length > 0 ? (
+                    <button onClick={() => setActiveModal('checkout ')}>
+                        Chechout
+                    </button>) : (<></>)
+            }
+        </div>) : (
+            <>
+                <h1>Checkout </h1>
+                <span>Total: R$ {totalOrder}</span>
+                <Select
+                    placeholder="Select payment"
+                    value={selectedPayment}
+                    options={paymentMethods}
+                    onChange={(selected /*, actionMeta*/) => {
+                        setSelectedPayment(selected);
+                        if (selected) {
+                            setSelectedPayment(selected);
+                        }
+
+                        const newOrder = {
+                            shiftId: Number(shiftId),
+                            paymentMethodId: selected.id,
+                            totalOrder,
+                            suborders
+                        }
+                        console.log('newOrer: ', newOrder)
+                        setOrder(newOrder);
+                    }}
+                    getOptionLabel={(option) => option.name}
+                    getOptionValue={(option) => option.id}
+                />
+
+                <div className="actions">
+                    <button onClick={handleConfirmNewSale}>Confirm</button>
+                    <button onClick={() => setActiveModal("newSale")}>Cancel</button>
+
+                </div>
+            </>
+
+
+        )
+    )
 }
+
+
+//  React.useEffect(() => {
+    
+//     fetchSaleHistory();
+
+//   }, [fetchSaleHistory]);
+
+//   const  fetchSaleHistory = React.useCallback(async () => {
+
+//     console.log(historySales);
+//     console.log('isCashierOpen', isCashierOpen);
+
+//     if (isCashierOpen) {
+//       try {
+
+//         setIsLoading(true);
+//         const { data } = await axios.get(`/sales/list/daily/${shiftId}`);
+//         setHistorySales(data.data);
+//         toast.success('Sales history restablised');
+//         setIsLoading(false);
+
+//       } catch (error) {
+
+//         setIsLoading(false);
+//         if (error.response.status == 401) {
+//           dispatch(actions.loginFailure());
+//         }
+//         toast.error('Error fetching sale history');
+//       }
+//     }
+//   }, [isCashierOpen, shiftId]);

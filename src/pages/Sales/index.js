@@ -10,6 +10,7 @@ import * as actions from '../../store/modules/auth/actions'
 import { useCashier } from "../../Context/CashierContext";
 import { Modal } from "../../components/Layout/Modal";
 import NewSale from "../../components/Layout/Sale";
+import { SlArrowDown } from "react-icons/sl";
 
 
 
@@ -28,34 +29,41 @@ export default function Sales({ match }) {
   const [qtt, setQtt] = useState(1);
   const [suborder, setSuborder] = useState([]);
 
+  const dateFormatter = new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'short',
+    timeStyle: 'short'
+  });
+
+  const fetchSaleHistory = React.useCallback(async () => {
+
+    console.log(historySales);
+    console.log('isCashierOpen', isCashierOpen);
+
+    if (isCashierOpen) {
+      try {
+
+        setIsLoading(true);
+        const { data } = await axios.get(`/sales/list/daily/${shiftId}`);
+        setHistorySales(data.data);
+        toast.success('Sales history restablised');
+        setIsLoading(false);
+
+      } catch (error) {
+
+        setIsLoading(false);
+        if (error.response.status == 401) {
+          dispatch(actions.loginFailure());
+        }
+        toast.error('Error fetching sale history');
+      }
+    }
+  }, [isCashierOpen, shiftId]);
 
   React.useEffect(() => {
 
-    async function getData() {
-      console.log(historySales);
-      console.log('isCashierOpen', isCashierOpen);
-      if (isCashierOpen) {
-        try {
-          setIsLoading(true);
-          const { data } = axios.get(`/sales/list/daily/${shiftId}`);
-          setHistorySales(data);
-          toast.success('Sales history restablised');
-          console.log('Data history: ')
-          console.log(data);
-          setIsLoading(false);
-        } catch (error) {
-          setIsLoading(false);
-          if (error.response.status == 401) {
-            dispatch(actions.loginFailure());
-          }
-          toast.error('Error fetching sale history');
-        }
-      }
-    }
+    fetchSaleHistory();
 
-    getData();
-  }, [])
-
+  }, [fetchSaleHistory]);
 
 
   return (
@@ -78,13 +86,25 @@ export default function Sales({ match }) {
         <h1>Sales Page</h1>
         <TabNav>
           <button onClick={() => {
-            setShowModal(true);
+            if (isCashierOpen) {
+              setShowModal(true);
+            } else {
+              toast.error("Cashier has not been opened, open it and try again");
+            }
+
           }}>New Sale</button>
         </TabNav>
 
         <Container>
           <p>Sales history</p>
-          {historySales && historySales.length > 0 ? (<p>Ha vendas</p>) : (<p>There is not history for current cashier</p>)}
+          {historySales && historySales.length > 0 ? (
+            <ul>
+              {
+                historySales.map(item => (<li key={item.id}>Date: {dateFormatter.format(new Date(item.order.createdAt))}  | Payment: {item.order.paymentMethod.name} | Total R$ {item.order.totalOrder} <SlArrowDown size={1} /></li>))
+              }
+            </ul>
+          ) : (<p>There is not history for current cashier</p>)}
+          {console.log(historySales)}
         </Container>
       </Container>
 
