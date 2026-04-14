@@ -23,22 +23,26 @@ function Routes() {
     <Switch>
 
       <CustomRoute exact path="/" component={Home} isClosed={true} />
-      <CustomRoute exact path="/clients" component={Clients} isClosed={true} />
-      <CustomRoute exact path="/client" component={Client} isClosed={true} />
-      <CustomRoute exact path="/product/:id/edit" component={Product} isClosed={true} />
-      {/* <CustomRoute exact path="/product/:id/Delete" component={Product} isClosed={true} /> */}
 
+      <CustomRoute exact path="/clients" component={Clients} isClosed={true} />
+
+      <CustomRoute exact path="/client/:id/edit" component={Client} isClosed={true} />
+
+      <CustomRoute exact path="/client" component={Client} isClosed={true} />
+
+      <CustomRoute exact path="/product/:id/edit" component={Product} isClosed={true} />
 
       <CustomRoute exact path="/products" component={Products} isClosed={true} />
+
       <CustomRoute exact path="/product" component={Product} isClosed={true} />
 
-      <CustomRoute exact path="/sales" component={Sales} isClosed={true}/>
+      <CustomRoute exact path="/sales" component={Sales} isClosed={true} />
       <CustomRoute exact path="/stock" component={Stock} isClosed={true} />
-      <CustomRoute exact path="/login" component={Login} isClosed={false}/>
-      <CustomRoute exact path="/cashier" component={Cashier} isClosed={true}/>
+      <CustomRoute exact path="/login" component={Login} isClosed={false} />
+      <CustomRoute exact path="/cashier" component={Cashier} isClosed={true} />
       <CustomRoute exact path="/register" component={Register} isClosed={false} />
       <CustomRoute component={Page404} />
-      
+
     </Switch>
   );
 }
