@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUserCircle, FaEdit } from "react-icons/fa";
+import { FaUserCircle, FaEdit, FaWindowClose } from "react-icons/fa";
 import { Container } from "../../styles/GlobalStyle";
 import { get } from "lodash";
 import { Form, ProfilePicture, Title } from './styled';
@@ -11,40 +11,27 @@ import axios from "../../services/axios";
 import history from '../../services/history';
 import * as actions from '../../store/modules/auth/actions';
 import { Link } from "react-router-dom";
+import { SlPencil, SlClose, SlUserFollow } from "react-icons/sl";
 
 
 
 export default function Clients({ match }) {
-
+  const [clients, setClients] = useState([]);
   const id = match.params.id;
   const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [lastName, setlastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [age, setAge] = useState('');
-  const [weight, setWeight] = useState('');
-  const [height, setHeight] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [photo, setPhoto] = useState('');
 
-  // na minha implementacao os dados vem da pagina anterior para nao precisar buscar no servidor de novo. Porem no curso ha uma nova chamada para o endpoint com as informacoes do aluno.
+
   React.useEffect(() => {
-    if (!id) return;
 
     async function getData() {
       try {
+        console.log('useEffect clients called')
         setIsLoading(true);
-        const { data } = await axios.get(`/alunos/${id}`);
-        const Foto = get(data, 'Fotos[0].url', '');
-
-        setName(data.nome || '');
-        setlastName(data.sobrenome || '');
-        setEmail(data.email || '');
-        setAge(data.idade || '');
-        setWeight(data.peso || '');
-        setHeight(data.altura || '');
-        setPhoto(Foto);
-
+        const { data } = await axios.get(`/clients/list`);
+        console.log("data from clients: ", data);
+        setClients(data);
+        toast.success("Clients restored")
         setIsLoading(false);
 
       } catch (error) {
@@ -60,91 +47,86 @@ export default function Clients({ match }) {
       }
     }
     getData();
-  }, [id]);
+  }, []);
 
-  async function handleSubmit(e) {
+  async function handleDeleteAsk(e, client) {
     e.preventDefault();
-    let formErrors = false;
+    const confirm = window.confirm(`Do you really wish to exclude ${client.name} ?`);
+    console.log(confirm);
+    if (confirm) {
+      try {
+        setIsLoading(true);
+        await axios.delete(`clients/delete/${client.id}`);
+        const index = clients.indexOf(client);
+        const clientsUpdated = [...clients];
+        clientsUpdated.splice(index, 1);
+        setClients(clientsUpdated);
+        setIsLoading(false);
+        toast.success("Client has been excluded");
 
-    // validacao inputs
-    if (name.length < 3 || name.length > 255) {
-      formErrors = true;
-      toast.error('Name must be between at least 3 and at most 255 characters long')
-    }
-
-    if (name.length < 3 || name.length > 255) {
-      formErrors = true;
-      toast.error('Last name must be between at least 3 and at most 255 characters long')
-    }
-
-    if (!isEmail(email)) {
-      formErrors = true;
-      toast.error('Invalid e-mail');
-    }
-
-    if (!isInt(String(age))) {
-      formErrors = true;
-      toast.error('Age mismatch, a number must be provided');
-    }
-
-    if (!isFloat(String(height))) {
-      formErrors = true;
-      toast.error('Height mismatch a number must be provided');
-    }
-
-    if (!isFloat(String(weight))) {
-      formErrors = true;
-      toast.error('Weight mismatch a number must be provided');
-    }
-
-    if (formErrors) return;
-
-    try {
-      if (id) {
-
-        const response = await axios.put(`/alunos/${id}`, {
-          nome: name,
-          sobrenome: lastName,
-          email,
-          altura: height,
-          idade: age,
-          peso: weight
-        });
-
-        toast.success('Data update succed!');
-      } else {
-
-        const response = await axios.post(`/alunos/`, {
-          nome: name,
-          sobrenome: lastName,
-          email,
-          altura: height,
-          idade: age,
-          peso: weight
-        });
-        toast.success('Register created successfuly');
-
-        history.push(`/student/${response.data.id}/edit`);
       }
-    } catch (error) {
-      const status = get(error, 'response.data', 0);
-      const data = get(error, 'response.data', {});
-      const errors = get(error, 'response.errors', []);
-
-      if (errors.length > 0) {
-        errors.map(e => toast.error(e))
-      } else {
-        toast.error('Unknown error');
+      catch (e) {
+        setIsLoading(false);
+        const errors = get(e, 'response.data.errors', []);
+        errors.map(e => toast.error(e));
+        if (!errors) {
+          toast.error(e);
+        }
       }
-
-      if (status === 401) dispatch(actions.loginFailure())
     }
-
   }
+
+
 
   return (
     <Container>
-     <h1>Clients Page</h1>
+      <Loading isLoading={isLoading} />
+      <Title >Clients</Title>
+      <Link to="/client"> <SlUserFollow/> New Client </Link>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Last name</th>
+              <th>E-mail</th>
+              <th>Phone</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              clients && clients.length > 0 ? (clients.map(client => (
+                <tr key={client.id}>
+                  <td >
+                    {client.name}
+                  </td>
+                  <td >
+                    {client.lastName}
+                  </td>
+                  <td >
+                    {client.email}
+                  </td>
+                  <td >
+                    {client.phone}
+                  </td>
+                  <td>
+                    <Link to={`/client/${client.id}/edit`}> <SlPencil size={15} /> </Link>
+                    
+                    <SlClose onClick={(e)=> handleDeleteAsk(e, client)} size={15}/>
+
+                  </td>
+                </tr>
+              )
+              )) : (
+                <tr></tr>
+              )
+            }
+          </tbody>
+        </table>
+
+      </div>
+
     </Container>
   );
 }
