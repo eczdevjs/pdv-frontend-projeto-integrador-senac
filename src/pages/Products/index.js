@@ -10,14 +10,6 @@ import { IoAddCircle } from "react-icons/io5";
 import Loading from "../../components/Loading";
 
 
-
-
-
-/// CONFERIR O HISTORICO DE ALTERACOES E COMMITAR, TERMINEI O CRUD DE PRODUTOS
-
-
-
-
 export default function Products() {
 
   const [products, setProducts] = useState([]);
