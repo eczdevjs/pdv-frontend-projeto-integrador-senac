@@ -72,8 +72,6 @@ export default function Product({ match }) {
       toast.error('Name must be between at least 3 and at most 255 characters long')
     }
 
-
-
     if (!isFloat(String(price))) {
       formErrors = true;
       toast.error('Weight mismatch a number must be provided');
@@ -83,7 +81,6 @@ export default function Product({ match }) {
 
     try {
       if (id) {
-
         const response = await axios.put(`/products/edit/${id}`, {
           name,
           brand,
@@ -129,13 +126,6 @@ export default function Product({ match }) {
     <Container>
       <Loading isLoading={isLoading} />
       <h1 >{id ? 'Edit Product' : 'Product Registration'}</h1>
-
-      {/* {id && (
-        <ProfilePicture>
-          {photo ? (<img src={photo} alt={name}></img>) : (<FaUserCircle size={90} />)}
-          <Link to={`/photo/${id}`} > <FaEdit size={18}/></Link>
-        </ProfilePicture>
-        )} */}
 
       <Form onSubmit={handleSubmit}>
         <label htmlFor="name">
