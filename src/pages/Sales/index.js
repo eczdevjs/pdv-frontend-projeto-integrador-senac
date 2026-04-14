@@ -1,5 +1,4 @@
 import React, { use, useState } from "react";
-import Select from 'react-select';
 import axios from '../../services/axios';
 import { useDispatch } from "react-redux";
 import { Container, TabNav, TabButton } from "../../styles/GlobalStyle";
@@ -96,7 +95,7 @@ export default function Sales({ match }) {
         </TabNav>
 
         <Container>
-          <p>Sales history</p>
+          <p><h3>Sales history</h3></p>
           {historySales && historySales.length > 0 ? (
             <ul>
               {
