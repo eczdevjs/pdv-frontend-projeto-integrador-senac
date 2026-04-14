@@ -6,46 +6,57 @@ import { StudentContainer, ProfilePicture } from "./styled";
 import { get } from 'lodash';
 import { FaUserCircle, FaEdit, FaWindowClose } from 'react-icons/fa';
 import { toast } from "react-toastify";
-
+import { IoAddCircle } from "react-icons/io5";
 import Loading from "../../components/Loading";
 
-export default function Product() {
-  const [students, setStudents] = useState([]);
-  const [isLoading, setIsLoading]  = useState(false);
-  const apiUrl = 'http://192.168.0.233:3001';
-
-  // React.useEffect(() => {
-  //   async function getData() {
-  //     setIsLoading(true);
-  //     try {
-  //       const response = await axios.get('/alunos');
-  //       setStudents(response.data);
-  //       toast.success()
-  //       setIsLoading(false);
-  //     } catch (e) {
-  //       setIsLoading(false);
-  //       toast.error(e.message);
-  //     }
-  //   }
-
-  //   getData();
-  // }, []);
 
 
-  async function handleDeleteAsk(e, student) {
+
+
+/// CONFERIR O HISTORICO DE ALTERACOES E COMMITAR, TERMINEI O CRUD DE PRODUTOS
+
+
+
+
+export default function Products() {
+
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  // const apiUrl = 'http://192.168.0.233:3001';
+
+  React.useEffect(() => {
+    async function getData() {
+      setIsLoading(true);
+      try {
+        const response = await axios.get('/products');
+        setProducts(response.data);
+        console.log("products response: ", response.data);
+        toast.success()
+        setIsLoading(false);
+      } catch (e) {
+        setIsLoading(false);
+        toast.error(e.message);
+      }
+    }
+
+    getData();
+  }, []);
+
+
+  async function handleDeleteAsk(e, product) {
     e.preventDefault();
-    const confirm = window.confirm(`Do you really wish to exclude ${student.nome} ?`);
+    const confirm = window.confirm(`Do you really wish to exclude ${product.name} ?`);
     console.log(confirm);
     if (confirm) {
       try {
         setIsLoading(true);
-        await axios.delete(`alunos/${student.id}`);
-        const index = students.indexOf(student);
-        const studentsUpdated = [...students];
-        studentsUpdated.splice(index, 1);
-        setStudents(studentsUpdated);
+        await axios.delete(`products/delete/${product.id}`);
+        const index = products.indexOf(product);
+        const productsUpdated = [...products];
+        productsUpdated.splice(index, 1);
+        setProducts(productsUpdated);
         setIsLoading(false);
-        toast.success("Student has been excluded");
+        toast.success("Product has been excluded");
 
       }
       catch (e) {
@@ -61,38 +72,34 @@ export default function Product() {
 
   return (
     <Container>
-      <h1>Products page</h1>
-      {/* <Loading isLoading={isLoading}/>
-      <h1 style={{fontFamily: "system-ui"}}>Students Page</h1>
-      <Link to="/student">New student</Link>
+      <Loading isLoading={isLoading} />
+      <h1 style={{ fontFamily: "system-ui" }}>Products </h1>
+      <Link to="/product"> <IoAddCircle size={30}/></Link>
       <StudentContainer>
         {
-          students.map(student => (
-            <div key={String(student.id)}>
-              <ProfilePicture>
-              
-                {
-                  get(student, 'Fotos[0].url', '') ?
-                    (<img src={student.Fotos[0].url}></img>) : (<FaUserCircle size={36} />)
-                }
-              </ProfilePicture>
+          products.map(product => (
+            <div key={String(product.id)}>
 
-              <span>{student.nome}</span>
-              <span>{student.email}</span>
+              <span>{product.id}</span>
+              <span>{product.name}</span>
+              <span>{product.brand}</span>
+              <span>R$ {product.price}</span>
+              <span>{product.productModel}</span>
+              <span>{product.size}</span>
 
-              <Link to = {`/student/${student.id}/edit`}>
-                  <FaEdit />
+              <Link to={`/product/${product.id}/edit`}>
+                <FaEdit />
               </Link>
 
-              <Link to={`/student/${student.id}/delete`}>
-                <FaWindowClose />
+              <Link to={`/product/${product.id}/delete`}>
+                <FaWindowClose onClick={(e) => {handleDeleteAsk(e, product)}}/>
               </Link>
 
             </div>
           ))
         }
 
-      </StudentContainer> */}
+      </StudentContainer>
 
     </Container>
   );
