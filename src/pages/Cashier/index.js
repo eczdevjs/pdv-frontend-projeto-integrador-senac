@@ -278,8 +278,8 @@ export default function Cashier() {
           <CashierSubContainer style={{ maxWidth: '100%' }}>
             <h2>History of closed cashiers</h2>
             <h3>List of previous cashier transactions</h3>
+            
             {
-
               <table border='1' style={{ width: '100%', textAlign: 'left' }}>
                 <thead>
                   <tr>
