@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from '../../services/axios';
-import { Container } from "../../styles/GlobalStyle";
-import { StudentContainer, ProfilePicture } from "./styled";
+import { Container, Table } from "../../styles/GlobalStyle";
+import { ProductContainer} from "./styled";
 import { get } from 'lodash';
 import { FaUserCircle, FaEdit, FaWindowClose } from 'react-icons/fa';
 import { toast } from "react-toastify";
 import { IoAddCircle } from "react-icons/io5";
 import Loading from "../../components/Loading";
+import { SlEqualizer, SlPencil, SlPlus, SlMinus } from "react-icons/sl";
 
 
 export default function Products() {
@@ -66,32 +67,46 @@ export default function Products() {
     <Container>
       <Loading isLoading={isLoading} />
       <h1 style={{ fontFamily: "system-ui" }}>Products </h1>
-      <Link to="/product"> <IoAddCircle size={30}/></Link>
-      <StudentContainer>
-        {
-          products.map(product => (
-            <div key={String(product.id)}>
+      <Link to="/product"> <IoAddCircle size={30} />New</Link>
+      <ProductContainer>
+        <Table>
+          <thead>
+            <th>Id</th>
+            <th>Product</th>
+            <th>Brand</th>
+            <th>Price</th>
+            <th>Model</th>
+            <th>Size</th>
+            <th>Actions</th>
+          </thead>
+          <tbody>
+            {
+              products.map(product => (
+                <tr key={String(product.id)}>
+                  <td>{product.id}</td>
+                  <td>{product.name}</td>
+                  <td>{product.brand}</td>
+                  <td>R$ {product.price}</td>
+                  <td>{product.productModel}</td>
+                  <td>{product.size}</td>
+                  <td >
+                    <div>
+                      <Link to={`/product/${product.id}/edit`}>
+                        <SlPencil />
+                      </Link>
+                    </div>
+                    <Link to={`/product/${product.id}/delete`}>
+                      <SlMinus onClick={(e) => { handleDeleteAsk(e, product) }} />
+                    </Link></td>
+                </tr>
+              ))
+            }
+          </tbody>
 
-              <span>{product.id}</span>
-              <span>{product.name}</span>
-              <span>{product.brand}</span>
-              <span>R$ {product.price}</span>
-              <span>{product.productModel}</span>
-              <span>{product.size}</span>
+        </Table>
 
-              <Link to={`/product/${product.id}/edit`}>
-                <FaEdit />
-              </Link>
 
-              <Link to={`/product/${product.id}/delete`}>
-                <FaWindowClose onClick={(e) => {handleDeleteAsk(e, product)}}/>
-              </Link>
-
-            </div>
-          ))
-        }
-
-      </StudentContainer>
+      </ProductContainer>
 
     </Container>
   );
