@@ -4,6 +4,7 @@ import Select from 'react-select';
 import axios from "../../../services/axios";
 import { useCashier } from "../../../Context/CashierContext";
 import {SlArrowRight} from 'react-icons/sl'
+import { Table } from "../../../styles/GlobalStyle";
 
 export default function NewSale({ onConfirm, onCancel, }) {
     const [order, setOrder] = useState({});
@@ -182,7 +183,7 @@ export default function NewSale({ onConfirm, onCancel, }) {
             </div>
 
             <div>
-                <table>
+                <Table>
                     <thead>
                         <tr>
                             <th>Code</th>
@@ -224,7 +225,7 @@ export default function NewSale({ onConfirm, onCancel, }) {
 
                         ))) : (<p></p>)}
                     </tbody>
-                </table>
+                </Table>
             </div>
             {
                 suborders.length > 0 ? (
