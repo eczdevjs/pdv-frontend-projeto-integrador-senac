@@ -58,13 +58,14 @@ export const Container = styled.section`
     // flex-direction: column;
     // align-items: center;
     width: 100%;
-    max-width: 500px;
+    max-width: 700px;
     background: #fff;
     margin-left: 200px;
     padding: 20px;
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     margin:0;
+    overflow: auto;
 
 `;
 
@@ -164,3 +165,30 @@ export const Form = styled.form`
   }
   
 `
+export const Tr = styled.tr`
+  background-color : ${props => (props.isActive ? '#038bf4' : '#e0e0e0')}
+
+`
+
+export const Table = styled.table`
+  width: 100%;            /* Ocupa todo o espaço lateral */
+  border-collapse: collapse; /* Remove espaços entre as bordas das células */
+  table-layout: auto;     /* 'auto' ajusta conforme o conteúdo, 'fixed' força larguras iguais */
+
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    color: ${primaryColor}
+  }
+  
+  td {
+    color: #000000
+  }
+
+  /* Opcional: Faz com que uma coluna específica (ex: Descrição) 
+     ocupe todo o espaço restante */
+  .coluna-principal {
+    width: 100%;
+  }
+`;
