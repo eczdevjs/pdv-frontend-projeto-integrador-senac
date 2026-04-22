@@ -1,7 +1,7 @@
 import React, { use, useState } from "react";
 import axios from '../../services/axios';
 import { useDispatch } from "react-redux";
-import { Container, TabNav, TabButton } from "../../styles/GlobalStyle";
+import { Container, TabNav, Table } from "../../styles/GlobalStyle";
 import Loading from '../../components/Loading';
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
@@ -10,7 +10,6 @@ import { useCashier } from "../../Context/CashierContext";
 import { Modal } from "../../components/Layout/Modal";
 import NewSale from "../../components/Layout/Sale";
 import { SlArrowDown } from "react-icons/sl";
-
 
 
 export default function Sales({ match }) {
@@ -66,9 +65,10 @@ export default function Sales({ match }) {
 
 
   return (
-    <>
-
+    <div style={{ display: "flex", flexDirection: 'column' }}>
+      <h1>Sales</h1>
       <Container>
+
         <Loading isLoading={isLoading} />
         {
           showModal && (
@@ -82,7 +82,7 @@ export default function Sales({ match }) {
 
             </Modal>)
         }
-        <h1>Sales Page</h1>
+
         <TabNav>
           <button onClick={() => {
             if (isCashierOpen) {
@@ -96,19 +96,35 @@ export default function Sales({ match }) {
 
         <Container>
           <p><h3>Sales history</h3></p>
+
           {historySales && historySales.length > 0 ? (
-            <ul>
-              {
-                historySales.map(item => (<li key={item.id}>Date: {dateFormatter.format(new Date(item.order.createdAt))}  | Payment: {item.order.paymentMethod.name} | Total R$ {item.order.totalOrder} <SlArrowDown size={1} /></li>))
-              }
-            </ul>
+            <Table>
+              <thead>
+                <td>Date</td>
+                <td>Payment</td>
+                <td>Total R$</td>
+                <td>Action</td>
+              </thead>
+
+              <tbody>
+                {
+                  historySales.map(item => (
+                    <tr key={item.id}>
+                      <td>{dateFormatter.format(new Date(item.order.createdAt))}</td>
+                      <td>{item.order.paymentMethod.name}</td>
+                      <td>{item.order.totalOrder}</td>
+                      <td> <SlArrowDown size={10} /></td>
+                    </tr>))
+                }
+              </tbody>
+            </Table>
           ) : (<p>There is not history for current cashier</p>)}
           {console.log(historySales)}
         </Container>
       </Container>
 
 
-    </>
+    </div>
 
   );
 }
