@@ -4,7 +4,8 @@ import { toast } from "react-toastify";
 import Loading from "../../components/Loading";
 import { Modal } from "../../components/Layout/Modal";
 import { useCashier } from "../../Context/CashierContext";
-import {loginFailure} from '../../store/modules/auth/actions'
+import {loginFailure} from '../../store/modules/auth/actions';
+import { Table } from "../../styles/GlobalStyle";
 import {
   CashierContainer,
   CashierSubContainer,
@@ -280,7 +281,7 @@ export default function Cashier() {
             <h3>List of previous cashier transactions</h3>
             
             {
-              <table border='1' style={{ width: '100%', textAlign: 'left' }}>
+              <Table >
                 <thead>
                   <tr>
                     <th>
@@ -316,7 +317,7 @@ export default function Cashier() {
                     )) : (<p>No data</p>)
                   }
                 </tbody>
-              </table>
+              </Table>
 
             }
             <div className="actions">
