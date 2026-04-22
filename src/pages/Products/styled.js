@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { primaryColor, primaryDarkColor } from '../../config/colors';
 
 
-export const StudentContainer = styled.div`
+export const ProductContainer = styled.div`
   margin-top: 20px;
 
   div {
