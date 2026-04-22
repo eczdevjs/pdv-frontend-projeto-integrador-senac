@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FaUserCircle, FaEdit, FaWindowClose } from "react-icons/fa";
-import { Container } from "../../styles/GlobalStyle";
+import { Container, Table } from "../../styles/GlobalStyle";
 import { get } from "lodash";
 import { Form, ProfilePicture, Title } from './styled';
 import { toast } from "react-toastify";
@@ -84,7 +84,7 @@ export default function Clients({ match }) {
       <Title >Clients</Title>
       <Link to="/client"> <SlUserFollow/> New Client </Link>
       <div>
-        <table>
+        <Table>
           <thead>
             <tr>
               <th>Name</th>
@@ -123,7 +123,7 @@ export default function Clients({ match }) {
               )
             }
           </tbody>
-        </table>
+        </Table>
 
       </div>
 
