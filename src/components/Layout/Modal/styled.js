@@ -5,9 +5,10 @@ export const Container = styled.div`
   padding: 30px;
   border-radius: 8px;
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
+  max-height: 90vh;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  overflow-y: scrow;
+  overflow-y: auto;
   h2 {
     margin-bottom: 20px;
   }
