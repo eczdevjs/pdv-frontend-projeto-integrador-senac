@@ -54,23 +54,46 @@ export default createGlobalStyle`
 `;
 
 export const Container = styled.section`
-    // display: flex;
-    // flex-direction: column;
-    // align-items: center;
+    // // display: flex;
+    // // flex-direction: column;
+    // // align-items: center;
+    // width: 100%;
+    // min-width: 700px;
+   
+    // background: #fff;
+    // padding: 20px;
+    // border-radius: 4px;
+    // box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    // // margin-left: 200px;
+    // margin:0;
+    // overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+    align-items: center;        
     width: 100%;
-    max-width: 700px;
+    min-height: 100vh; // Garante que o fundo cubra a tela toda
+    background: #f0f0f0; // Cor de fundo diferente para notar o contraste
+`;
+
+export const MainContainer = styled.section`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: start ;
+    width: 100%;
+    min-width: 700px;
+    max-width: 900px;
     background: #fff;
     margin-left: 200px;
     padding: 20px;
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin:0;
+    margin:0 auto;
     overflow: auto;
-
 `;
-
 export const ContentWrappper = styled.div`
-margin-left: ${props => (props.menuOpened ? '200px': '70px')};
+margin-left: ${props => (props.menuOpened ? '200px' : '70px')};
 transition: margin-left 0.3s ease-in-out;
 width: auto;
 min-height: 100vh;
@@ -190,5 +213,45 @@ export const Table = styled.table`
      ocupe todo o espaço restante */
   .coluna-principal {
     width: 100%;
+  }
+`;
+
+
+export const SpanValue = styled.span`
+  color: #444d4d;
+  margin-bottom: 40px;
+`
+
+
+export const OrderInfo = styled.dl`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 16px;
+  background: #f0f0f0;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #eee;
+
+  dt {
+    font-weight: bold;
+    color: #666;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 500;
+    color: #333;
+    text-align: right; // Alinha os valores à direita para facilitar a leitura
+  }
+
+  .total {
+    // grid-column: span 2;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    margin-top: 5px;
+    font-size: 1.1rem;
+    color: ${primaryColor}; // Verde para o total
   }
 `;
