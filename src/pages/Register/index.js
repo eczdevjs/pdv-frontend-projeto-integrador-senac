@@ -9,12 +9,13 @@ import { get, last } from 'lodash';
 import { useSelector, useDispatch } from "react-redux";
 import * as actions from '../../store/modules/auth/actions'
 import Loading from '../../components/Loading'
+
 // trade of: tanto registro como edicao no mesmo codigo
 export default function Register() {
   const dispatch = useDispatch();
 
   const id = useSelector(state => state.auth.user.id);
-  const nameStored = useSelector(state => state.auth.user.nome);
+  const nameStored = useSelector(state => state.auth.user.name);
   const lastNameStored = useSelector(state => state.auth.user.lastName);
   const emailStored = useSelector(state => state.auth.user.email);
   const phoneStored = useSelector(state => state.auth.user.phone);
@@ -74,6 +75,7 @@ export default function Register() {
     dispatch(actions.loginFailure());
     history.push('/login');
   }
+
 
   return (
     <Container>
