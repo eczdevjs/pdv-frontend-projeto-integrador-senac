@@ -18,7 +18,8 @@ export default function NewSale({ onConfirm, onCancel, }) {
     const [productList, setProductList] = useState([]);
     const [productPrice, setProductPrice] = useState(0);
     const [selectedProduct, setSelectedProduct] = useState(null);
-
+    const [clients, setClients] = useState([]);
+    const [selectedClient, setSelectedClient] = useState(null);
     const [qtt, setQtt] = useState(1);
     const [totalOrder, setTotalOrder] = useState(0);
     const [subtotal, setSubtotal] = useState(0);
@@ -30,6 +31,10 @@ export default function NewSale({ onConfirm, onCancel, }) {
                 setProductList(data);
                 const response = await axios.get('/paymentmethod/list');
                 const methods = response.data;
+                const clientResponse = await axios.get('/clients/list');
+                setClients(clientResponse.data);
+                console.log('clients response: ', clientResponse)
+
                 setPaymentMetohds(methods);
                 console.log(data);
             } catch (error) {
@@ -50,12 +55,14 @@ export default function NewSale({ onConfirm, onCancel, }) {
         }
 
         const newItem = {
+            
             productId: selectedProduct.id,
             name: selectedProduct.name,
             productPrice: selectedProduct.price,
             qtt: qtt,
             total: selectedProduct.price * qtt
         }
+
 
         setSuborders([...suborders, newItem]);
         const newTotal = totalOrder + newItem.total;
@@ -93,23 +100,6 @@ export default function NewSale({ onConfirm, onCancel, }) {
 
         createSale();
 
-        //     const sale = {
-        //         "totalOrder": 419.40,
-        //         "paymentMethodId": 1,
-        //     }
-
-
-        //    const cart =  suborders: [{
-        //         "productId": 1,
-        //         "qtt": 1,
-        //         "productPrice": 299.90,
-        //         "total": 299.90
-        //     }, {
-        //         "productId": 2,
-        //         "qtt": 1,
-        //         "productPrice": 119.50,
-        //         "total": 119.50
-        //     }]
     }
 
 
@@ -129,6 +119,26 @@ export default function NewSale({ onConfirm, onCancel, }) {
 
     return (
         activeModal == "newSale" ? (<div style={{ "overflow": "scroll" }}>
+          <label htmlFor="client" style={{marginBottom: '10px'}}>
+            Client:
+            <Select
+                value={selectedClient}
+                options={clients}
+                onChange={(selected, actionMeta) => {
+                    setSelectedClient(selected);
+                 
+
+                    if (actionMeta.action === 'clear') {
+                        setSelectedClient(null);
+                    }
+                }}
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => option.id}
+                placeholder="Select client"
+                isClearable
+                noOptionsMessage={() => "No client found"}
+            />
+          </label>
 
             <Select
                 value={selectedProduct}
@@ -248,6 +258,7 @@ export default function NewSale({ onConfirm, onCancel, }) {
                         }
 
                         const newOrder = {
+                            clientId: selectedClient.id,
                             shiftId: Number(shiftId),
                             paymentMethodId: selected.id,
                             totalOrder,
@@ -272,34 +283,3 @@ export default function NewSale({ onConfirm, onCancel, }) {
     )
 }
 
-
-//  React.useEffect(() => {
-    
-//     fetchSaleHistory();
-
-//   }, [fetchSaleHistory]);
-
-//   const  fetchSaleHistory = React.useCallback(async () => {
-
-//     console.log(historySales);
-//     console.log('isCashierOpen', isCashierOpen);
-
-//     if (isCashierOpen) {
-//       try {
-
-//         setIsLoading(true);
-//         const { data } = await axios.get(`/sales/list/daily/${shiftId}`);
-//         setHistorySales(data.data);
-//         toast.success('Sales history restablised');
-//         setIsLoading(false);
-
-//       } catch (error) {
-
-//         setIsLoading(false);
-//         if (error.response.status == 401) {
-//           dispatch(actions.loginFailure());
-//         }
-//         toast.error('Error fetching sale history');
-//       }
-//     }
-//   }, [isCashierOpen, shiftId]);
