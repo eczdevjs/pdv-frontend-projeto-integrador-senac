@@ -8,6 +8,7 @@ import Clients from '../pages/Clients';
 import Product from '../pages/Product';
 import Products from '../pages/Products';
 import Sales from '../pages/Sales';
+import Sale from '../pages/Sale';
 import Stock from '../pages/Stock';
 import Cashier from '../pages/Cashier';
 import Register from '../pages/Register';
@@ -37,6 +38,9 @@ function Routes() {
       <CustomRoute exact path="/product" component={Product} isClosed={true} />
 
       <CustomRoute exact path="/sales" component={Sales} isClosed={true} />
+
+      <CustomRoute exact path="/sale/:id" component={Sale} isClosed={true} />
+
       <CustomRoute exact path="/stock" component={Stock} isClosed={true} />
       <CustomRoute exact path="/login" component={Login} isClosed={false} />
       <CustomRoute exact path="/cashier" component={Cashier} isClosed={true} />
