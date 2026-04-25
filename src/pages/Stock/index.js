@@ -108,7 +108,7 @@ export default function Stock() {
 
               <tbody>
                 {
-                  stockList.length > 0 ? (stockList.map((p) => (
+                  stockList.length > 0 && (stockList.map((p) => (
                     <tr key={p.id}>
                       <td>
                         <p>{p.product.name}</p>
@@ -121,7 +121,7 @@ export default function Stock() {
                       <td>{p.category || '-'}</td>
                       <td>{p.brand || '-'}</td>
                     </tr>
-                  ))) : (<></>)
+                  ))) 
                 }
               </tbody>
             </Table>
@@ -162,18 +162,21 @@ export default function Stock() {
                   </th>
                   <th>
                     User
-                  </th>  <th>
+                  </th>  
+                  <th>
                     Product
-                  </th>  <th>
+                  </th>  
+                  <th>
                     Transaction
-                  </th>  <th>
+                  </th>  
+                  <th>
                     Quantity changed
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  transactionsList.length > 0 ? (transactionsList.map((t) =>
+                  transactionsList.length > 0  &&(transactionsList.map((t) =>
                     <tr key={t.id}>
                       <td>{dateFormatter.format(new Date(t.createdAt))}</td>
                       <td>{t.user.name}</td>
@@ -181,7 +184,7 @@ export default function Stock() {
                       <td>{t.referenceType.code}</td>
                       <td>{t.qtyChange}</td>
                     </tr>
-                  )) : (<></>)
+                  )) 
                 }
               </tbody>
             </Table>
