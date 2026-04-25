@@ -1,11 +1,11 @@
-import React, { useState} from "react";
-import{ useDispatch} from "react-redux";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import Loading from "../../components/Loading";
 import { Modal } from "../../components/Layout/Modal";
 import { useCashier } from "../../Context/CashierContext";
-import {loginFailure} from '../../store/modules/auth/actions';
-import { Table } from "../../styles/GlobalStyle";
+import { loginFailure } from '../../store/modules/auth/actions';
+import { Table, SpanValue } from "../../styles/GlobalStyle";
 import {
   CashierContainer,
   CashierSubContainer,
@@ -40,11 +40,12 @@ export default function Cashier() {
   });
 
   const {
-    handleOpenCashier, 
+    handleOpenCashier,
     handleCloseCashier,
     handleGetShift,
-    isCashierOpen, 
-    handleGetTransactions, 
+    isCashierOpen,
+    shiftId,
+    handleGetTransactions,
     handleGetBalances,
     handleDeposit,
     handleWithdraw,
@@ -52,36 +53,35 @@ export default function Cashier() {
   } = useCashier();
 
   React.useEffect(() => {
-
-    const storedId = localStorage.getItem('activeShiftId');
-
-    if (storedId && !modalType) {
-      const shiftId = Number(storedId);
-
-      async function getShift() {
+ 
+    if (isCashierOpen && !modalType) {
+    
+      async function getData() {
 
         setIsLoading(true);
         try {
-
-          const [shiftData, transactionData, balancesData] = await Promise.all([
-            handleGetShift(shiftId),
-            handleGetTransactions(shiftId),
-            handleGetBalances(shiftId)
-          ]);
+          const [shiftData,
+            transactionData,
+            balancesData] = await Promise.all([
+              handleGetShift(shiftId),
+              handleGetTransactions(shiftId),
+              handleGetBalances(shiftId)
+            ]);
 
           const { openingBalance, startTime } = shiftData;
           setOpenedAt(startTime);
           setInitialBalance(openingBalance);
           setTransactions(transactionData);
+          console.log('Transactions data: ', transactionData);
           setBalances(balancesData);
 
           const totals = transactionData.reduce((acc, t) => {
             const amount = Number(t.amount) || 0;
             if (t.type.name === 'DEPOSIT') acc.deposits += amount;
             if (t.type.name === 'WITHDRAW') acc.withdraw += amount;
-            if(t.type.name === 'SALE') acc.sales += amount;
+            if (t.type.name === 'SALE') acc.sales += amount;
             return acc;
-          }, { deposits: 0, withdraw: 0 , sales: 0});
+          }, { deposits: 0, withdraw: 0, sales: 0 });
 
           setTotalDeposits(totals.deposits);
           setTotalWithdraw(totals.withdraw);
@@ -92,16 +92,16 @@ export default function Cashier() {
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
-          if(e.response?.status === 401){
+          if (e.response?.status === 401) {
             dispatch(loginFailure());
           }
           console.log('erro no carregamento: ', e)
           toast.error("Nao foi possivel restaurar  a sessao caixa", { autoClose: 8000 });
         }
       }
-      getShift();
+      getData();
     }
-  }, [handleGetShift, handleGetTransactions, modalType]);
+  }, [handleGetShift, handleGetTransactions,dispatch,handleGetBalances, modalType, activeTab]);
 
 
   const handleConfirmAction = async (data) => {
@@ -110,7 +110,8 @@ export default function Cashier() {
     try {
       if (modalType === 'OPEN_CASHIER') {
         const response = await handleOpenCashier(data);
-        setOpenedAt(response.openingBalance);
+        //alterei opened at aqui problema parese da data
+        setOpenedAt(response.openedAt);
         setInitialBalance(response.openingBalance);
         toast.success('Caixa aberto');
         setModalType('');
@@ -184,39 +185,40 @@ export default function Cashier() {
       </TabNav>
 
       {activeTab === 'current' && (
-        <CashierContainer>
+        <CashierContainer >
           <CashierSubContainer>
 
             <h1>Cash Summary</h1>
-
-            <div>
-              <span className="label">Opening: </span>
-              <span className="value"> {openedAt ? dateFormatter.format(new Date(openedAt)) : ''} </span>
+            <div style={{ paddingBottom: '4px' }}>
+              <div>
+                <span className="label"><strong>OPENED AT:  </strong> </span>
+                <SpanValue className="value"> {openedAt ? dateFormatter.format(new Date(openedAt)) : ''} </SpanValue>
+              </div>
             </div>
 
             <div>
-              <span className="label" >Initial balance: </span>
-              <span className="value">R${initialBalance ? initialBalance : ''} </span>
+              <span className="label" ><strong>INITIAL BALANCE: </strong> </span>
+              <SpanValue className="value">{new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(initialBalance ? initialBalance : '')} </SpanValue>
             </div>
 
             <div>
-              <span className="label" >Total Deposits: </span>
-              <span className="value">R$ {totalDeposits ? totalDeposits : `R$ ${0}`} </span>
+              <span className="label" ><strong>TOTAL DEPOSITS:  </strong></span>
+              <SpanValue className="value">{new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(totalDeposits ? totalDeposits : 0)}</SpanValue>
             </div>
 
             <div>
-              <span className="label" >Withdraws: </span>
-              <span className="value">R$ {totalWithdraw ? totalWithdraw : `R$ ${0}`} </span>
+              <span className="label" ><strong>TOTAL WITHDRAW:  </strong></span>
+              <SpanValue className="value">{new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(totalWithdraw ? totalWithdraw : 0) } </SpanValue>
             </div>
 
             <div>
-              <span className="label" >Total Sales: </span>
-              <span className="value">R$ {totalSales ? totalSales : 0} </span>
+              <span className="label" ><strong>TOTAL SALES: </strong> </span>
+              <SpanValue className="value">{new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(totalSales ? totalSales : 0)} </SpanValue>
             </div>
 
             <div>
-              <span className="label" ><strong>Final Balance:</strong> </span>
-              <span className="value"><strong>{finalBalance ? finalBalance : `R$ 0`}</strong> </span>
+              <span className="label" ><strong>FINAL BALANCE: </strong> </span>
+              <SpanValue className="value"><strong>{new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(finalBalance ? finalBalance : 0)}</strong> </SpanValue>
             </div>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '15px', padding: '10px' }}>
@@ -237,7 +239,9 @@ export default function Cashier() {
                   <h2><small> {item.payment.name}</small></h2>
                 </div>
                 <div className="value">
-                  {new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(item.amount)}
+                  <SpanValue>
+                    {new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(item.amount)}
+                  </SpanValue>
                 </div>
 
               </div>)
@@ -247,31 +251,34 @@ export default function Cashier() {
             )}
           </CashierSubContainer>
 
-          <CashierSubContainer>
-
+          <CashierSubContainer >
             <h2>Transactions</h2>
+            <button onClick={isCashierOpen ? () => setModalType('CLOSE_CASHIER')
+              : () => setModalType('OPEN_CASHIER')}>{isCashierOpen ? 'Close Cashier' : 'Open Cashier'}
+            </button>
 
             {transactions.length > 0 ? (
               transactions.map((item, index) =>
               (<div key={`${item.paymentMethod}-${index}`} className="trasaction-item">
                 <div className="info">
+                  <div><strong>{dateFormatter.format(new Date(item.createdAt))}</strong> </div>
+                  
                   <strong>{item.type.name}</strong>
                   <small> {item.payment.name}</small>
                 </div>
                 <div className="value">
-                  {new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(item.totalAmount || item.amount)}
+                  <SpanValue>
+                    {new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(item.totalAmount || item.amount)}
+                  </SpanValue>
                 </div>
 
               </div>)
               )
             ) : (<p>No transactions found.</p>)}
 
-            <button onClick={isCashierOpen ? () => setModalType('CLOSE_CASHIER')
-              : () => setModalType('OPEN_CASHIER')}>{isCashierOpen ? 'Close Cashier' : 'Open Cashier'}</button>
+
           </CashierSubContainer>
         </CashierContainer>)}
-
-
 
       {activeTab === 'previous' && (
 
@@ -279,7 +286,7 @@ export default function Cashier() {
           <CashierSubContainer style={{ maxWidth: '100%' }}>
             <h2>History of closed cashiers</h2>
             <h3>List of previous cashier transactions</h3>
-            
+
             {
               <Table >
                 <thead>
@@ -310,11 +317,11 @@ export default function Cashier() {
                       <tr key={item.id} >
                         <td>{dateFormatter.format(new Date(item.startTime))}</td>
                         <td>R$ {item.openingBalance}</td>
-                        <td>{dateFormatter.format(new Date(item.endTime))}</td>
+                        <td> { item.endTime ? dateFormatter.format(new Date(item.endTime)) : 'N/A'}</td>
                         <td>{item.closingBalance}</td>
                         <td>{item.difference}</td>
                       </tr>
-                    )) : (<p>No data</p>)
+                    )) : (<tr><td>No data</td></tr>)
                   }
                 </tbody>
               </Table>
