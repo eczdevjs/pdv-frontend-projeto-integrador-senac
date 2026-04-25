@@ -91,6 +91,9 @@ function* registerRequest({ payload }) {
 }
 
 export function loginFailure() {
+  
+    localStorage.removeItem('persist:react-api-rest');
+    localStorage.clear();
     delete axios.defaults.headers.common.Authorization;
 }
 
