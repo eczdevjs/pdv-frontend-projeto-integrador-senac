@@ -50,31 +50,41 @@ export const getBalancesRequest = async (shiftId) => {
     }
 }
 
-export const depositRequest = async (shiftId, amount)=> {
+export const depositRequest = async (shiftId, amount) => {
     try {
-        const data = await axios.post(`/cashier/deposit/${shiftId}`, {amount})
+        const data = await axios.post(`/cashier/deposit/${shiftId}`, { amount })
     } catch (error) {
         throw error;
     }
 }
 
-export const withdrawRequest = async (shiftId, {amount, reason})=> {
+export const withdrawRequest = async (shiftId, { amount, reason }) => {
     try {
-        const data = await axios.post(`/cashier/withdraw/${shiftId}`, {amount, reason})
+        const data = await axios.post(`/cashier/withdraw/${shiftId}`, { amount, reason })
     } catch (error) {
         throw error;
     }
 }
 
-export const previousShiftsRequest = async (initialDate, endDate)=> {
+export const previousShiftsRequest = async (initialDate, endDate) => {
     try {
-        const {data}  = await axios.get('/cashier/shifts/filter',{
-        params: {
-            initialDate,
-            endDate
-        }
-    });
-    return data;
+        const { data } = await axios.get('/cashier/shifts/filter', {
+            params: {
+                initialDate,
+                endDate
+            }
+        });
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getOpenedShiftRequest = async () => {
+    try {
+        const { data } = await axios.get('/cashier/shift/opened');
+        (()=>{console.log('data from shift request ',data)})();
+        return data.data;
     } catch (error) {
         throw error;
     }
