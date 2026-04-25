@@ -32,12 +32,14 @@ export const CashierContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    // gap: 20px;
-    // align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
     width: 100%;
     padding: 20px;
     gap: 20px;
-    max-width: 800px;
+    min-width: 100%;
+    max-width: 900px;
     background: #e8e8e8;
     // margin-left: 200px;
     border-radius: 4px;
@@ -58,9 +60,13 @@ export const CashierContainer = styled.div`
 export const CashierSubContainer = styled.div`
     background: #fff;
     padding: 20px;
+    min-width: 350px;
+    max-width: 100%;
+    box-sizing: border-box;
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    
+    overflow: auto;
+    max-height: 400px;
     /* Reduzi o max-width para que caibam 3 na mesma linha */
     width: 100%;
     max-width: 350px; 
@@ -70,11 +76,29 @@ export const CashierSubContainer = styled.div`
     flex-direction: column;
     gap: 10px;
 
-    h1, h2 { margin-bottom: 10px; display: flex; justify-content: center; }
+    h1, h2 { 
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+    }
 
 `
 export const MainContainer = styled.div`
-
+     display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+    min-width: 800px;
+    max-width: 1200px;
+    background: #fff;
+    margin-left: 200px;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    margin:0;
+    // overflow: auto;
 
 `
 
