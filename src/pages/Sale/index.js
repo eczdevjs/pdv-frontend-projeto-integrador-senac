@@ -1,7 +1,7 @@
 import React, { use, useState } from "react";
 import axios from '../../services/axios';
 import { useDispatch } from "react-redux";
-import { Container, Table,  OrderInfo } from "../../styles/GlobalStyle";
+import { Container, Table, OrderInfo } from "../../styles/GlobalStyle";
 import Loading from '../../components/Loading';
 import { toast } from "react-toastify";
 import PropTypes from "prop-types";
@@ -64,11 +64,11 @@ export default function Sale({ match }) {
             <dd className="total">{toCurrency(order.totalOrder)}</dd>
 
           </OrderInfo>
-        
+
 
           <Table>
             <thead>
-              <th>Price</th>
+              <th>Client</th>
               <th>Quantity</th>
               <th>Total</th>
               <th>Payment</th>
@@ -80,7 +80,7 @@ export default function Sale({ match }) {
             <tbody>
               {order.suborders.map((suborder) => (
                 <tr key={suborder.id}>
-                  <td>{toCurrency}</td>
+                  <td>{suborder.client || 'N/P'}</td>
                   <td>{suborder.qtt}</td>
                   <td>{toCurrency(suborder.total)}</td>
                   <td>{order.paymentMethod.name}</td>
