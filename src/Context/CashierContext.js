@@ -1,21 +1,53 @@
-import react, { createContext, useState, useContext } from 'react';
+import react, { createContext, useState, useContext, useEffect } from 'react';
 import {
     openCashierRequest,
     closeCashierRequest,
-    getShifRequest, 
-    getTransactionsRequest, 
-    getBalancesRequest, 
-    depositRequest, 
-    withdrawRequest, 
-    previousShiftsRequest
- } from '../services/CashierService';
+    getShifRequest,
+    getTransactionsRequest,
+    getBalancesRequest,
+    depositRequest,
+    withdrawRequest,
+    previousShiftsRequest,
+    getOpenedShiftRequest
+} from '../services/CashierService';
+import { useSelector } from 'react-redux';
+
+
+
+
 
 const CashierContext = createContext();
 
-export const CashierProvider = ({ children }) => {
 
-    const [shiftId, setShiftId] = useState(localStorage.getItem('activeShiftId'));
+export const CashierProvider = ({ children }) => {
+    const { token, isLoggedIn } = useSelector(state => state.auth);
+    const [shiftId, setShiftId] = useState(null);
     const [isCashierOpen, setIsCashierOpen] = useState(false);
+
+    useEffect(() => {
+        async function loadActiveShift() {
+
+            if (!isLoggedIn) {
+                setShiftId(null);
+                setIsCashierOpen(false);
+                return;
+            }
+
+            try {
+                console.log('getShift called');
+                const shift = await handleGetOpenedShift();
+                (() => { console.log('shiftId funcao getShift CashierContext: ', shift) })();
+                if (shift) {
+                    console.log('shift from cashierContext', shift.id);
+                    setShiftId(shift.id);
+                    setIsCashierOpen(true);
+                }
+            } catch (error) {
+                console.log("Error validating opened shift", error);
+            }
+        }
+        loadActiveShift();
+    }, [isLoggedIn, token]);
 
     const handleOpenCashier = async (amount) => {
         try {
@@ -97,22 +129,32 @@ export const CashierProvider = ({ children }) => {
         }
     }
 
-
+    async function handleGetOpenedShift() {
+        try {
+            const data = await getOpenedShiftRequest();
+            (() => { console.log('data from handleGetOpenedShift: ', data) })();
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     return (<CashierContext.Provider value={{
         shiftId,
         isCashierOpen,
-        handleOpenCashier, 
-        handleCloseCashier, 
-        handleGetShift, 
-        handleGetTransactions, 
-        handleGetBalances, 
+        handleOpenCashier,
+        handleCloseCashier,
+        handleGetShift,
+        handleGetTransactions,
+        handleGetBalances,
         handleDeposit,
         handleWithdraw,
-        handlePreviousShifts
+        handlePreviousShifts,
+        handleGetOpenedShift
     }}>
         {children}
     </CashierContext.Provider>)
 }
 
 export const useCashier = () => useContext(CashierContext);
+
