@@ -118,7 +118,9 @@ export default function Cashier() {
       }
 
       if (modalType === 'CLOSE_CASHIER') {
-        await handleCloseCashier(data);
+        console.log(`isCashierOpen ${isCashierOpen}, shiftId=${shiftId}, closingBalance=${data}`)
+        await handleCloseCashier(isCashierOpen, shiftId, data);
+
         setModalType('')
         toast.success('Caixa fechado');
       }

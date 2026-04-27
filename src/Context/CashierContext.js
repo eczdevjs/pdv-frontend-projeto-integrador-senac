@@ -61,15 +61,14 @@ export const CashierProvider = ({ children }) => {
         }
     }
 
-    const handleCloseCashier = async (amount) => {
+    const handleCloseCashier = async (isCashierOpen,shiftId,amount) => {
         try {
-
-            const data = await closeCashierRequest(amount);
-            localStorage.removeItem('activeShiftId');
+            const data = await closeCashierRequest(isCashierOpen,shiftId,amount);
             setShiftId(null);
             setIsCashierOpen(false);
             return data;
         } catch (error) {
+            console.log(error);
             throw error;
         }
     }

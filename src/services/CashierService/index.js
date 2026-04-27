@@ -1,5 +1,5 @@
 import axios from '../axios';
-
+import { useCashier } from '../../Context/CashierContext';
 
 export const openCashierRequest = async (openingBalance) => {
     try {
@@ -10,12 +10,13 @@ export const openCashierRequest = async (openingBalance) => {
     }
 }
 
-export const closeCashierRequest = async (closingBalance) => {
-    const shiftId = localStorage.getItem('activeShiftId');
+export const closeCashierRequest = async (isCashierOpen,shiftId,closingBalance) => {
+   
 
-    if (!shiftId) throw new Error('Cashier is not open, it is not possible closing it');
+    if (!isCashierOpen) throw new Error('Cashier is not open, it is not possible closing it');
 
     try {
+        console.log("shiftId / closingBalance: ", shiftId, closingBalance)
         const response = await axios.patch(`/cashier/close/${shiftId}`, { closingBalance });
         return response.data;
     } catch (error) {
