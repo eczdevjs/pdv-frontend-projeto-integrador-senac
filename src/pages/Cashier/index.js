@@ -53,9 +53,9 @@ export default function Cashier() {
   } = useCashier();
 
   React.useEffect(() => {
- 
+
     if (isCashierOpen && !modalType) {
-    
+
       async function getData() {
 
         setIsLoading(true);
@@ -101,7 +101,7 @@ export default function Cashier() {
       }
       getData();
     }
-  }, [handleGetShift, handleGetTransactions,dispatch,handleGetBalances, modalType, activeTab]);
+  }, [handleGetShift, handleGetTransactions, dispatch, handleGetBalances, modalType, activeTab]);
 
 
   const handleConfirmAction = async (data) => {
@@ -208,7 +208,7 @@ export default function Cashier() {
 
             <div>
               <span className="label" ><strong>TOTAL WITHDRAW:  </strong></span>
-              <SpanValue className="value">{new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(totalWithdraw ? totalWithdraw : 0) } </SpanValue>
+              <SpanValue className="value">{new Intl.NumberFormat('pt-BR', { style: "currency", currency: 'BRL' }).format(totalWithdraw ? totalWithdraw : 0)} </SpanValue>
             </div>
 
             <div>
@@ -222,8 +222,20 @@ export default function Cashier() {
             </div>
 
             <div style={{ display: 'flex', gap: '10px', marginTop: '15px', padding: '10px' }}>
-              <button onClick={() => setModalType('DEPOSIT')}>Add Cash</button>
-              <button onClick={() => { setModalType('WITHDRAW') }}>Withdraw</button>
+              <button onClick={() => {
+                if (!isCashierOpen) {
+                  toast.error('Cashier is not opened'); 
+                  return;
+                }
+                setModalType('DEPOSIT')
+              }}>Add Cash</button>
+              <button onClick={() => {
+                if (!isCashierOpen) {
+                  toast.error('Cashier is not opened'); 
+                  return;
+                } 
+                setModalType('WITHDRAW')
+              }}>Withdraw</button>
             </div>
           </CashierSubContainer>
 
@@ -262,7 +274,7 @@ export default function Cashier() {
               (<div key={`${item.paymentMethod}-${index}`} className="trasaction-item">
                 <div className="info">
                   <div><strong>{dateFormatter.format(new Date(item.createdAt))}</strong> </div>
-                  
+
                   <strong>{item.type.name}</strong>
                   <small> {item.payment.name}</small>
                 </div>
@@ -317,7 +329,7 @@ export default function Cashier() {
                       <tr key={item.id} >
                         <td>{dateFormatter.format(new Date(item.startTime))}</td>
                         <td>R$ {item.openingBalance}</td>
-                        <td> { item.endTime ? dateFormatter.format(new Date(item.endTime)) : 'N/A'}</td>
+                        <td> {item.endTime ? dateFormatter.format(new Date(item.endTime)) : 'N/A'}</td>
                         <td>{item.closingBalance}</td>
                         <td>{item.difference}</td>
                       </tr>
