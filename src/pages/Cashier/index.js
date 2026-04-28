@@ -354,7 +354,7 @@ export default function Cashier() {
                       <tr key={item.id} >
                         <td>{dateFormatter.format(new Date(item.startTime))}</td>
                         <td>R$ {item.openingBalance}</td>
-                        <td> {item.endTime ? dateFormatter.format(new Date(item.endTime)) : 'CURRENT OPENED'}</td>
+                        <td> {item.endTime ? dateFormatter.format(new Date(item.endTime)) : 'CURRENTLY OPENED'}</td>
                         <td>{toCurrency(item.closingBalance)}</td>
                         <td>{toCurrency(item.difference)}</td>
                       </tr>
