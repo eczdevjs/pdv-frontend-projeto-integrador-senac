@@ -54,8 +54,12 @@ export default function NewSale({ onConfirm, onCancel, }) {
             return;
         }
 
+        if(suborders.some(product => product.productId === selectedProduct.id)){
+            toast.error('Product has already been added, remove product from list and add it with new quantity!', {autoClose: 5000});
+            return ;
+        }
+
         const newItem = {
-            
             productId: selectedProduct.id,
             name: selectedProduct.name,
             productPrice: selectedProduct.price,
