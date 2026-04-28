@@ -10,8 +10,7 @@ export const openCashierRequest = async (openingBalance) => {
     }
 }
 
-export const closeCashierRequest = async (isCashierOpen,shiftId,closingBalance) => {
-   
+export const closeCashierRequest = async (isCashierOpen, shiftId, closingBalance) => {
 
     if (!isCashierOpen) throw new Error('Cashier is not open, it is not possible closing it');
 
@@ -37,6 +36,22 @@ export const getTransactionsRequest = async (shiftId) => {
     try {
         const response = await axios.get(`/cashier/history/${shiftId}`);
         return response.data.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getFilteredShiftsRequest = async (dates) => {
+    try {
+        console.log("filteredREquest",dates)
+        const response = await axios.get('/cashier/shifts/filter', {
+            params: {
+                initialDate: dates.initialDate,
+                endDate: dates.endDate
+            }
+        });
+        console.log("response data from request: ", response.data);
+        return response.data;
     } catch (error) {
         throw error;
     }
@@ -84,7 +99,7 @@ export const previousShiftsRequest = async (initialDate, endDate) => {
 export const getOpenedShiftRequest = async () => {
     try {
         const { data } = await axios.get('/cashier/shift/opened');
-        (()=>{console.log('data from shift request ',data)})();
+        (() => { console.log('data from shift request ', data) })();
         return data.data;
     } catch (error) {
         throw error;
