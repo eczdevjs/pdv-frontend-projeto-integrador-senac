@@ -49,7 +49,9 @@ export default function Cashier() {
     handleGetBalances,
     handleDeposit,
     handleWithdraw,
-    handlePreviousShifts
+    handlePreviousShifts,
+    handleFilteredShifts
+
   } = useCashier();
 
   React.useEffect(() => {
@@ -101,7 +103,7 @@ export default function Cashier() {
       }
       getData();
     }
-  }, [handleGetShift, handleGetTransactions, dispatch, handleGetBalances, modalType, activeTab]);
+  }, [handleGetShift, handleGetTransactions, dispatch, handleGetBalances, modalType, activeTab, previousShifts]);
 
 
   const handleConfirmAction = async (data) => {
@@ -110,7 +112,6 @@ export default function Cashier() {
     try {
       if (modalType === 'OPEN_CASHIER') {
         const response = await handleOpenCashier(data);
-        //alterei opened at aqui problema parese da data
         setOpenedAt(response.openedAt);
         setInitialBalance(response.openingBalance);
         toast.success('Caixa aberto');
@@ -120,7 +121,6 @@ export default function Cashier() {
       if (modalType === 'CLOSE_CASHIER') {
         console.log(`isCashierOpen ${isCashierOpen}, shiftId=${shiftId}, closingBalance=${data}`)
         await handleCloseCashier(isCashierOpen, shiftId, data);
-
         setModalType('')
         toast.success('Caixa fechado');
       }
@@ -136,9 +136,20 @@ export default function Cashier() {
         setModalType('');
         toast.success('Saque realizado');
       }
+
+      if (modalType === 'FILTER_DATE') {
+        console.log('cashier: ', data)
+        const history = await handleFilteredShifts(data);
+        console.log("history: ", history);
+        console.log("data", data);
+        setModalType('');
+        setPreviousShifts(history);
+
+        toast.success('History reached');
+      }
     } catch (error) {
       const errorMessage = error.response?.data?.msg || 'Unexpected error';
-      toast.error(errorMessage);
+      toast.error(errorMessage, { autoClose: 7000 });
     } finally {
       setIsLoading(false);
     }
@@ -173,13 +184,22 @@ export default function Cashier() {
           active={activeTab === 'previous'}
           onClick={async () => {
             setActiveTab('previous');
-            try {
-              const data = await handlePreviousShifts('2026-03-01', '2026-04-02');
-              setPreviousShifts(data);
-            } catch (error) {
-              console.log(error);
-            }
+            const today = new Date();
+            const thirtyDaysBefore = new Date();
+            thirtyDaysBefore.setDate(today.getDate() - 30);
 
+            const endDate = today.toISOString().split('T')[0];
+            const initialDate = thirtyDaysBefore.toISOString().split('T')[0]; 
+            window.alert(`Today: ${today.toISOString().split('T')[0]}, Last month: ${tirtyDaysBefore.toISOString().split('T')[0]} `);
+            try {
+              const history = await handleFilteredShifts({ initialDate, endDate });
+              setPreviousShifts(history);
+              toast.success("Last 30 transactions restablished")
+            } catch (e) {
+                toast.error('Error getting transactions');
+                console.log(e)
+            }
+            
           }}
         >
           Previous Cashier
@@ -226,16 +246,16 @@ export default function Cashier() {
             <div style={{ display: 'flex', gap: '10px', marginTop: '15px', padding: '10px' }}>
               <button onClick={() => {
                 if (!isCashierOpen) {
-                  toast.error('Cashier is not opened'); 
+                  toast.error('Cashier is not opened');
                   return;
                 }
                 setModalType('DEPOSIT')
               }}>Add Cash</button>
               <button onClick={() => {
                 if (!isCashierOpen) {
-                  toast.error('Cashier is not opened'); 
+                  toast.error('Cashier is not opened');
                   return;
-                } 
+                }
                 setModalType('WITHDRAW')
               }}>Withdraw</button>
             </div>
@@ -294,13 +314,13 @@ export default function Cashier() {
           </CashierSubContainer>
         </CashierContainer>)}
 
+
       {activeTab === 'previous' && (
 
         < CashierContainer >
           <CashierSubContainer style={{ maxWidth: '100%' }}>
             <h2>History of closed cashiers</h2>
-            <h3>List of previous cashier transactions</h3>
-
+            <h3>List of previous cashier transactions (last 30 days)</h3>
             {
               <Table >
                 <thead>
@@ -342,7 +362,7 @@ export default function Cashier() {
 
             }
             <div className="actions">
-              <button>Filter</button>
+              <button onClick={() => { setModalType('FILTER_DATE') }}>Filter</button>
             </div>
           </CashierSubContainer>
         </CashierContainer>)}
