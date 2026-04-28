@@ -5,7 +5,7 @@ export function Withdraw({ onConfirm, onCancel }) {
     const [amount, setAmount] = React.useState(0);
     const [reason, setReason] = React.useState('');
     return (<>
-        <h2>Realizar depósito caixa</h2>
+        <h2>Withdraw</h2>
         <input
             type="number"
             placeholder="R$ -0,00"
