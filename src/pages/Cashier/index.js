@@ -324,6 +324,9 @@ export default function Cashier() {
           <CashierSubContainer style={{ maxWidth: '100%' }}>
             <h2>History of closed cashiers</h2>
             <h3>List of previous cashier transactions (last 30 days)</h3>
+            <div className="actions">
+              <button onClick={() => { setModalType('FILTER_DATE') }}>Filter</button>
+            </div>
             {
               <Table >
                 <thead>
@@ -364,9 +367,7 @@ export default function Cashier() {
               </Table>
 
             }
-            <div className="actions">
-              <button onClick={() => { setModalType('FILTER_DATE') }}>Filter</button>
-            </div>
+            
           </CashierSubContainer>
         </CashierContainer>)}
     </MainContainer >);

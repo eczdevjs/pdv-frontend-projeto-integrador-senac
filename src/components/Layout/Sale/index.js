@@ -5,6 +5,9 @@ import axios from "../../../services/axios";
 import { useCashier } from "../../../Context/CashierContext";
 import {SlArrowRight} from 'react-icons/sl'
 import { Table } from "../../../styles/GlobalStyle";
+import { toCurrency } from "../../../utils/currencyValue";
+
+
 
 export default function NewSale({ onConfirm, onCancel, }) {
     const [order, setOrder] = useState({});
@@ -178,15 +181,15 @@ export default function NewSale({ onConfirm, onCancel, }) {
             <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <span style={{
                     padding: '4px', marginBottom: '4px'
-                }} placeholder="Price">Price R$ {productPrice}</span>
+                }} placeholder="Price">Price R$ {toCurrency(productPrice)}</span>
 
                 <span style={{
                     padding: '4px', marginBottom: '4px'
-                }} placeholder="Subtotal">Subtotal R$ {subtotal}</span>
+                }} placeholder="Subtotal">Subtotal R$ {toCurrency(subtotal)}</span>
 
                 <span style={{
                     padding: '4px', marginBottom: '4px'
-                }} placeholder="Price"><strong>Total R$ {totalOrder}</strong></span>
+                }} placeholder="Price"><strong>Total R$ {toCurrency(totalOrder)}</strong></span>
 
             </div>
 
