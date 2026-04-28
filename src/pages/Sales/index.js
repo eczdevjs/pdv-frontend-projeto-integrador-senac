@@ -70,7 +70,7 @@ export default function Sales({ match }) {
         <Loading isLoading={isLoading} />
         {
           showModal && (
-            <Modal showModal={showModal}>
+            <Modal showModal={showModal} closeModal={()=> setShowModal(false)}>
               <NewSale onCancel={() => setShowModal(false)} onConfirm={() => {
                 setSuborder([...suborder, { productId, qtt, total }])
                 setProductId('');

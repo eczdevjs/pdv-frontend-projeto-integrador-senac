@@ -162,7 +162,7 @@ export default function Cashier() {
       <Loading isLoading={isLoading} />
 
       {modalType && (
-        <Modal showModal={!!modalType}>
+        <Modal showModal={!!modalType} closeModal={() => {setModalType(null)}}>
           <CashierModalManager
             modalType={modalType}
             onCancel={() => setModalType(null)}

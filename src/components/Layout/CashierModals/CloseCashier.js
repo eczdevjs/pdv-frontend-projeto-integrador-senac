@@ -1,6 +1,7 @@
 import React from "react";
 
 export function CloseCashier({ onConfirm, onCancel }) {
+    
     const [inputValue, setInputValue] = React.useState(0);
 
     return (<>

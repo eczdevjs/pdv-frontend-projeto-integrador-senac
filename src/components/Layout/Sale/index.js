@@ -9,7 +9,7 @@ import { toCurrency } from "../../../utils/currencyValue";
 
 
 
-export default function NewSale({ onConfirm, onCancel, }) {
+export default function NewSale({ onConfirm, onCancel }) {
     const [order, setOrder] = useState({});
 
     const { isCashierOpen, shiftId } = useCashier();
