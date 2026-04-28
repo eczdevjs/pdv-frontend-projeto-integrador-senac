@@ -13,6 +13,7 @@ import {
   TabButton,
   TabNav
 } from "./styled";
+import {toCurrency} from '../../utils/currencyValue';
 
 import { CashierModalManager } from "../../components/Layout/CashierModals";
 
@@ -190,16 +191,18 @@ export default function Cashier() {
 
             const endDate = today.toISOString().split('T')[0];
             const initialDate = thirtyDaysBefore.toISOString().split('T')[0]; 
-            window.alert(`Today: ${today.toISOString().split('T')[0]}, Last month: ${tirtyDaysBefore.toISOString().split('T')[0]} `);
             try {
+              setIsLoading(true);
               const history = await handleFilteredShifts({ initialDate, endDate });
               setPreviousShifts(history);
-              toast.success("Last 30 transactions restablished")
+              setIsLoading(false);
+              toast.success("Last 30 days transactions restablished")
             } catch (e) {
+              setIsLoading(false);
                 toast.error('Error getting transactions');
                 console.log(e)
             }
-            
+
           }}
         >
           Previous Cashier
@@ -351,13 +354,13 @@ export default function Cashier() {
                       <tr key={item.id} >
                         <td>{dateFormatter.format(new Date(item.startTime))}</td>
                         <td>R$ {item.openingBalance}</td>
-                        <td> {item.endTime ? dateFormatter.format(new Date(item.endTime)) : 'N/A'}</td>
-                        <td>{item.closingBalance}</td>
-                        <td>{item.difference}</td>
+                        <td> {item.endTime ? dateFormatter.format(new Date(item.endTime)) : 'CURRENT OPENED'}</td>
+                        <td>{toCurrency(item.closingBalance)}</td>
+                        <td>{toCurrency(item.difference)}</td>
                       </tr>
                     )) : (<tr><td>No data</td></tr>)
                   }
-                </tbody>
+                </tbody>  
               </Table>
 
             }
