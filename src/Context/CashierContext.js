@@ -8,7 +8,8 @@ import {
     depositRequest,
     withdrawRequest,
     previousShiftsRequest,
-    getOpenedShiftRequest
+    getOpenedShiftRequest,
+    getFilteredShiftsRequest
 } from '../services/CashierService';
 import { useSelector } from 'react-redux';
 
@@ -61,9 +62,9 @@ export const CashierProvider = ({ children }) => {
         }
     }
 
-    const handleCloseCashier = async (isCashierOpen,shiftId,amount) => {
+    const handleCloseCashier = async (isCashierOpen, shiftId, amount) => {
         try {
-            const data = await closeCashierRequest(isCashierOpen,shiftId,amount);
+            const data = await closeCashierRequest(isCashierOpen, shiftId, amount);
             setShiftId(null);
             setIsCashierOpen(false);
             return data;
@@ -91,6 +92,8 @@ export const CashierProvider = ({ children }) => {
             throw error;
         }
     }
+
+
 
     const handleGetBalances = async (shiftId) => {
         try {
@@ -128,6 +131,17 @@ export const CashierProvider = ({ children }) => {
         }
     }
 
+    const handleFilteredShifts = async (dates) => {
+        try {
+            console.log("handleFiltered useCashier: ", dates);
+            const data = await getFilteredShiftsRequest(dates);
+            console.log("handleFilteredShifts return: ", data);
+            return data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async function handleGetOpenedShift() {
         try {
             const data = await getOpenedShiftRequest();
@@ -149,7 +163,8 @@ export const CashierProvider = ({ children }) => {
         handleDeposit,
         handleWithdraw,
         handlePreviousShifts,
-        handleGetOpenedShift
+        handleGetOpenedShift,
+        handleFilteredShifts
     }}>
         {children}
     </CashierContext.Provider>)
