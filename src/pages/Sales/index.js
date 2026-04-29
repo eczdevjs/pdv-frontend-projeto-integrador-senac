@@ -51,7 +51,7 @@ export default function Sales({ match }) {
         } catch (error) {
 
           setIsLoading(false);
-          if (error.response.status == 401) {
+          if (error.response?.status == 401) {
             dispatch(actions.loginFailure());
           }
           toast.error('Error fetching sale history');

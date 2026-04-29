@@ -31,7 +31,7 @@ export default function Sale({ match }) {
         console.log('Try block called')
         const { data } = await axios.get(`/sales/${id}`);
         setOrder(data);
-        console.log("Sale detail: ", order);
+        console.log("Sale detail: ", data);
       } catch (error) {
         toast.error('Error fetching sale information');
         console.log(error);
@@ -60,6 +60,9 @@ export default function Sale({ match }) {
             <dt>Date / Time</dt>
             <dd>{dateFormatter.format(new Date(order.createdAt))}</dd>
 
+            <dt>CLIENT</dt>
+            <dd>{`${order.client?.name || ''} ${order.client?.lastName || ''}`}</dd>
+
             <dt className="total">Total</dt>
             <dd className="total">{toCurrency(order.totalOrder)}</dd>
 
@@ -68,19 +71,20 @@ export default function Sale({ match }) {
 
           <Table>
             <thead>
-              <th>Client</th>
-              <th>Quantity</th>
-              <th>Total</th>
-              <th>Payment</th>
-              <th>Name</th>
-              <th>Brand</th>
-              <th>Description</th>
-              <th>Size</th>
+              <tr key="headerTable">
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Name</th>
+                <th>Brand</th>
+                <th>Description</th>
+                <th>Size</th>
+              </tr>
+
             </thead>
             <tbody>
               {order.suborders.map((suborder) => (
                 <tr key={suborder.id}>
-                  <td>{suborder.client || 'N/P'}</td>
                   <td>{suborder.qtt}</td>
                   <td>{toCurrency(suborder.total)}</td>
                   <td>{order.paymentMethod.name}</td>
