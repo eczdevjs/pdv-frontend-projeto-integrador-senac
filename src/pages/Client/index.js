@@ -72,14 +72,14 @@ export default function Client({ match }) {
       toast.error('Last name must be between at least 3 and at most 255 characters long')
     }
 
-    if (!isEmail(email)) {
+    if (email && !isEmail(email)) {
       formErrors = true;
       toast.error('Invalid e-mail');
     }
 
     if (!isMobilePhone(phone)) {
       formErrors = true;
-      toast.error('Invalid e-mail');
+      toast.error('Invalid Phone, or not provided');
     }
 
 
@@ -130,13 +130,13 @@ export default function Client({ match }) {
 
       <Form onSubmit={handleSubmit}>
         <label htmlFor="name">
-          Name
+          *Name
           <input type="text" value={name} onChange={e => setName(e.target.value)}>
           </input>
         </label>
 
         <label htmlFor="lastname">
-          Last name
+          *Last name
           <input type="text" value={lastName} onChange={e => setlastName(e.target.value)}>
           </input>
         </label>
@@ -149,7 +149,7 @@ export default function Client({ match }) {
 
 
         <label htmlFor="phone">
-          Phone
+          *Phone
           <input type="text" value={phone} onChange={e => setPhone(e.target.value)}>
           </input>
         </label>
