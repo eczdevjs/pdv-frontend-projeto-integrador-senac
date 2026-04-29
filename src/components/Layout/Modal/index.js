@@ -23,7 +23,6 @@ export function Modal({ children, showModal , closeModal}) {
         }
     },[closeModal]);
 
-    // if (!showModal) return;
  
     return (
         <Overlay>

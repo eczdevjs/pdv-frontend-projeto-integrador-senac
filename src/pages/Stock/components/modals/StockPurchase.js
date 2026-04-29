@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { Form, Table } from '../../../../styles/GlobalStyle'
 import axios from '../../../../services/axios';
-import Select from 'react-select'
+import Select from 'react-select';
+import {toCurrency} from '../../../../utils/currencyValue';
 
 export function StockPurchase({ onConfirm, onCancel }) {
     const [productList, setProductList] = useState([]);
@@ -46,6 +47,7 @@ export function StockPurchase({ onConfirm, onCancel }) {
             toast.error('Pending Invoice Number');
             return
         }
+
         const payload = {
             providerId: selectedProvider.id,
             invoiceNumber,
@@ -71,26 +73,17 @@ export function StockPurchase({ onConfirm, onCancel }) {
             toast.error('Select product before adding'); return;
         }
         if (!qty) { toast.error('Quantity is required to add.'); return };
+
         if (!unityCost) {
             toast.error('Unity cost is required');
             return
         }
 
-        /*
-            "userId": 10,
-            "providerId": 2,
-            "invoiceNumber": 123,
-            "total": 15000,
-            "products": [{
-                "productId": 1,
-                "qty": 100,
-                "unityCost": 100
-            },{
-                "productId": 2,
-                "qty": 100,
-                "unityCost": 50
-            }]
-        */
+        if (productsAdded.some(item => item.productId === selectedProduct.id)) {
+            toast.error('Product has already been added');
+            return;
+        }
+
         const item = {
             productId: selectedProduct.id,
             name: selectedProduct.name,
@@ -110,8 +103,12 @@ export function StockPurchase({ onConfirm, onCancel }) {
         setUnityCost(0);
     }
 
-    function handleDeleteItem(index) {
 
+
+    // IMPLEMENTAR DELECAO DE ITEM LISTA DE ENTRADA ESTOQUE
+    function handleDeleteItem(index) {
+        const arr = productsAdded.filter((_, i) => i != index);
+        setProductsAdded(arr);
     }
 
     return (<>
@@ -205,7 +202,7 @@ export function StockPurchase({ onConfirm, onCancel }) {
                                 {item.qty}
                             </td>
                             <td>
-                                {item.unityCost}
+                                {toCurrency(item.unityCost)}
                             </td>
 
                             <td>

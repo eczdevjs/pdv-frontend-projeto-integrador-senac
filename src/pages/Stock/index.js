@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from '../../services/axios';
-import { Container, TabButton, TabNav, Table } from "../../styles/GlobalStyle";
+import { Container, TabButton, TabNav, Table, Button } from "../../styles/GlobalStyle";
 import { get } from 'lodash';
 import { toast } from "react-toastify";
 import { SlEqualizer, SlPlus, SlMinus } from "react-icons/sl";
@@ -31,8 +31,18 @@ export default function Stock() {
     async function getData() {
       setIsLoading(true);
       try {
+        const today = new Date();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+        const endDate = today.toISOString().split('T')[0];
+        const initialDate = thirtyDaysAgo.toISOString().split('T')[0];
 
-        const transactionsResponse = await axios.get(`/stock/transactions/2026-04-20`);
+        const transactionsResponse = await axios.get(`/stock/transactions/filter`, {
+          params: {
+            initialDate,
+            endDate
+          }
+        });
         console.log("transactions response", transactionsResponse)
         const stockResponse = await axios.get('/stock/index')
 
@@ -49,9 +59,57 @@ export default function Stock() {
       }
     }
     getData();
-  }, [currentTab]);
+  }, [currentTab, modalType]);
+
+  function handleFilter() {
+    setModalType('FILTER_TRANSACTIONS');
+  }
+
+  function handleFilterRequest({ initialDate, endDate }) {
+    if(!initialDate || !endDate){
+      toast.error('Date is missing');
+      return;
+    }
+    
+    async function getData() {
+      try {
+        setIsLoading(true);
+        const { data } = await axios.get('/stock/transactions/filter', {
+          params: {
+            initialDate,
+            endDate
+          }
+        });
+
+        console.log(data);
+        if (data?.length === 0) {
+          setIsLoading(false);
+          toast.error('No transactions found');
+          return;
+        }
+
+        setTransactionsList(data);
+        setIsLoading(false);
+        setModalType(null);
+        toast.success('Transactions reached');
+      } catch (error) {
+        setIsLoading(false);
+        console.log('Error fetching transactions');
+        console.log(error);
+
+      }
+    }
+    getData();
+  }
 
 
+  function handleConfirmAction(data) {
+    switch (modalType) {
+      case 'FILTER_TRANSACTIONS':
+        handleFilterRequest(data);
+        break;
+    }
+  }
 
   async function handleDeleteAsk(e, stock) {
     e.preventDefault();
@@ -90,10 +148,7 @@ export default function Stock() {
       {currentTab === 'currentStock' && (
         <>
           <h1>Stock</h1>
-          <div className="actions">
-            <input type="text" placeholder="search"></input>
-            <SlEqualizer />
-          </div>
+        
           <Container>
             <Table>
               <thead>
@@ -121,7 +176,7 @@ export default function Stock() {
                       <td>{p.category || '-'}</td>
                       <td>{p.brand || '-'}</td>
                     </tr>
-                  ))) 
+                  )))
                 }
               </tbody>
             </Table>
@@ -131,14 +186,13 @@ export default function Stock() {
       {currentTab === "stockTransactions" && (
         <>
           {modalType && (
-            <Modal showModal={!!modalType}>
+            <Modal showModal={!!modalType} closeModal={() => { setModalType(null) }}>
               <StockModalManager
                 modalType={modalType}
-                onConfirm={()=> {console.log('confirmed button')}}
-                onCancel={()=> setModalType(null)}
-                // onCancel={() => setModalType(null)}
-                // onConfirm={(data) => handleConfirmAction(data)}
-               
+                onConfirm={(data) => {
+                  handleConfirmAction(data);
+                }}
+                onCancel={() => setModalType(null)}
               >
               </StockModalManager>
             </Modal>
@@ -149,8 +203,8 @@ export default function Stock() {
             <div>
               <MenuContainer setModalType={setModalType} />
             </div>
-            <input type="text" placeholder="search"></input>
-            <SlEqualizer />
+            {/* <input type="text" placeholder="search"></input> */}
+            <button onClick={handleFilter}>Filter by date</button>
           </div>
 
           <Container>
@@ -162,13 +216,13 @@ export default function Stock() {
                   </th>
                   <th>
                     User
-                  </th>  
+                  </th>
                   <th>
                     Product
-                  </th>  
+                  </th>
                   <th>
                     Transaction
-                  </th>  
+                  </th>
                   <th>
                     Quantity changed
                   </th>
@@ -176,7 +230,7 @@ export default function Stock() {
               </thead>
               <tbody>
                 {
-                  transactionsList.length > 0  &&(transactionsList.map((t) =>
+                  transactionsList.length > 0 && (transactionsList.map((t) =>
                     <tr key={t.id}>
                       <td>{dateFormatter.format(new Date(t.createdAt))}</td>
                       <td>{t.user.name}</td>
@@ -184,7 +238,7 @@ export default function Stock() {
                       <td>{t.referenceType.code}</td>
                       <td>{t.qtyChange}</td>
                     </tr>
-                  )) 
+                  ))
                 }
               </tbody>
             </Table>

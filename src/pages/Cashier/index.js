@@ -14,7 +14,6 @@ import {
   TabNav
 } from "./styled";
 import {toCurrency} from '../../utils/currencyValue';
-
 import { CashierModalManager } from "../../components/Layout/CashierModals";
 
 
@@ -316,7 +315,6 @@ export default function Cashier() {
 
           </CashierSubContainer>
         </CashierContainer>)}
-
 
       {activeTab === 'previous' && (
 
