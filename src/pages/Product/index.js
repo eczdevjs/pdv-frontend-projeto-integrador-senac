@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaUserCircle, FaEdit } from "react-icons/fa";
-import { Container } from "../../styles/GlobalStyle";
+import { SlPencil, SlTag } from "react-icons/sl";
+import { Container, ProductPicture } from "../../styles/GlobalStyle";
 import { get } from "lodash";
 import { Form } from '../../styles/GlobalStyle';
 import { toast } from "react-toastify";
@@ -18,11 +19,12 @@ export default function Product({ match }) {
 
   const id = match.params.id;
   const dispatch = useDispatch();
+  const [photoUrl, setPhotoUrl] = useState('');
   const [name, setName] = useState('');
   const [brand, setBrand] = useState('');
   const [productModel, setProductModel] = useState('');
   const [description, setDescription] = useState('');
-  const [price , setPrice] = useState('');
+  const [price, setPrice] = useState('');
   const [size, setSize] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [photo, setPhoto] = useState('');
@@ -44,7 +46,9 @@ export default function Product({ match }) {
         setPrice(data.price || '');
         setSize(data.size || '');
         // setPhoto(Foto);
-
+        const photo  = data.photo[0]?.url;
+        console.log("Photo url: ", photo);
+        setPhotoUrl(photo)
         setIsLoading(false);
 
       } catch (error) {
@@ -126,6 +130,14 @@ export default function Product({ match }) {
     <Container>
       <Loading isLoading={isLoading} />
       <h1 >{id ? 'Edit Product' : 'Product Registration'}</h1>
+      {id && (
+        <ProductPicture imgsize={25}>
+          {photoUrl ? (<img src={photoUrl} alt="Product photo"></img>) : (<SlTag size={100}/>)}
+          <Link>
+            <SlPencil size={25}/>
+          </Link>
+        </ProductPicture>
+      )}
 
       <Form onSubmit={handleSubmit}>
         <label htmlFor="name">

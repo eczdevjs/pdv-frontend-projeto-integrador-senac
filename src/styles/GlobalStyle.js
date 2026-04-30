@@ -255,3 +255,33 @@ export const OrderInfo = styled.dl`
     color: ${primaryColor}; // Verde para o total
   }
 `;
+
+
+export const ProductPicture = styled.div`
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0 20px;
+  position: relative;
+
+  img{
+    width: ${props => props.imgsize ? `${props.imgsize}rem` : `10rem`};
+    height:${props => props.imgsize ? `${props.imgsize}rem` : `10rem`};
+    border-radius: 50%
+  }
+  
+  a {
+    display: flex;
+    align-items: center;
+    justify-contet: center;
+    border:none;
+    position: absolute;
+    bottom: 0;
+    color: ${primaryColor};
+    background-color: '#fff';
+    width: 36px;
+    height:  36px;
+    border-radius: 50%;
+  }
+
+`
