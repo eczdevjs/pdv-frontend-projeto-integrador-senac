@@ -12,7 +12,8 @@ import Sale from '../pages/Sale';
 import Stock from '../pages/Stock';
 import Cashier from '../pages/Cashier';
 import Register from '../pages/Register';
-import Home from '../pages/Home'
+import Home from '../pages/Home';
+import { Photo } from "../pages/Photo";
 import { toast } from "react-toastify";
 
 function Routes() {
@@ -32,6 +33,8 @@ function Routes() {
       <CustomRoute exact path="/client" component={Client} isClosed={true} />
 
       <CustomRoute exact path="/product/:id/edit" component={Product} isClosed={true} />
+
+      <CustomRoute exact path="/product/:id/edit/photo" component={Photo} isClosed={true} />
 
       <CustomRoute exact path="/products" component={Products} isClosed={true} />
 

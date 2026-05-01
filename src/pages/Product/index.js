@@ -133,7 +133,7 @@ export default function Product({ match }) {
       {id && (
         <ProductPicture imgsize={25}>
           {photoUrl ? (<img src={photoUrl} alt="Product photo"></img>) : (<SlTag size={100}/>)}
-          <Link>
+          <Link to={`/product/${id}/edit/photo`}>
             <SlPencil size={25}/>
           </Link>
         </ProductPicture>
