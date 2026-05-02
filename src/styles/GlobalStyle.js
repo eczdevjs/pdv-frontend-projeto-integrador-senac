@@ -285,3 +285,126 @@ export const ProductPicture = styled.div`
   }
 
 `
+
+export const LabelDate = styled.label`
+  display: block;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  color: #475569; /* Cinza slate suave */
+  margin-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #1e293b;
+  }
+`;
+
+export const InputDate = styled.input`
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #1e293b;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+
+  /* Estilização do ícone do calendário (Chrome/Safari) */
+  &::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.4);
+    transition: filter 0.2s;
+    
+    &:hover {
+      filter: invert(0.2);
+    }
+  }
+
+  &:focus {
+    border-color: #3b82f6; /* Azul profissional */
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    background-color: #fff;
+  }
+
+  &:hover:not(:focus) {
+    border-color: #cbd5e1;
+  }
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+`;
+
+export const FilterButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  // height: 20px;
+  // width: 50px;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  
+  /* Alinhamento com a paleta Blue/Slate anterior */
+  background-color: #3b82f6;
+  color: #ffffff;
+  
+  /* Sombra sutil para profundidade */
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+
+  &:hover {
+    background-color: #2563eb;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    background-color: #1d4ed8;
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.4);
+  }
+
+  &:disabled {
+    background-color: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+`;
+
+
+// export const TabNav = styled.div`
+//   display: flex;
+//   gap: 10px;
+//   margin-bottom :20px;
+//   border-bottom: 2px solid #ddd;
+//   padding-bottom: 10px;
+// `
+
+// export const TabButton = styled.button`
+//   background: ${props => (props.active ? '#034bf4' : 'transparent')};
+//   color: ${props => (props.active ? '#fff' : '#666')};
+//   border: ${props => (props.active ? 'none' : '1px solid #ccc')};
+//   padding 10px 20px;
+//   border-radius: 4px;
+//   font-weight: bold;
+//   transition: all 0.3s;
+
+//   &:hover{
+//     background: ${props => (props.active ? '#038bf4' : '#e0e0e0')};
+//   }
+// `
