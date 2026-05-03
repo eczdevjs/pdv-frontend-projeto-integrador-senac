@@ -5,7 +5,12 @@ import Loading from "../../components/Loading";
 import { Modal } from "../../components/Layout/Modal";
 import { useCashier } from "../../Context/CashierContext";
 import { loginFailure } from '../../store/modules/auth/actions';
-import { Table, SpanValue } from "../../styles/GlobalStyle";
+import {
+  Table, SpanValue,
+  LabelDate,
+  InputDate,
+  FilterButton
+} from "../../styles/GlobalStyle";
 import {
   CashierContainer,
   CashierSubContainer,
@@ -13,13 +18,12 @@ import {
   TabButton,
   TabNav
 } from "./styled";
-import {toCurrency} from '../../utils/currencyValue';
+import { toCurrency } from '../../utils/currencyValue';
 import { CashierModalManager } from "../../components/Layout/CashierModals";
 
 
 export default function Cashier() {
 
-  const [activeTab, setActiveTab] = useState('current');
   const [isLoading, setIsLoading] = useState(false);
   const [openedAt, setOpenedAt] = useState('');
   const [initialBalance, setInitialBalance] = useState(0);
@@ -30,7 +34,19 @@ export default function Cashier() {
   const [modalType, setModalType] = useState('');
   const [totalDeposits, setTotalDeposits] = useState(0);
   const [totalWithdraw, setTotalWithdraw] = useState(0);
-  const [previousShifts, setPreviousShifts] = useState([]);
+
+  //recuperando dados sessao
+
+
+
+  const savedData = getDataSession();
+
+  console.log('Saved Data cashier: ', savedData);
+
+  const [activeTab, setActiveTab] = useState(savedData.activeTab || 'current');
+  const [previousShifts, setPreviousShifts] = useState(savedData.previousShifts || []);
+  const [initialDate, setInitialDate] = useState(savedData.initialDate || '');
+  const [endDate, setEndDate] = useState(savedData.endDate || '');
 
   const dispatch = useDispatch();
 
@@ -53,6 +69,7 @@ export default function Cashier() {
     handleFilteredShifts
 
   } = useCashier();
+
 
   React.useEffect(() => {
 
@@ -105,6 +122,35 @@ export default function Cashier() {
     }
   }, [handleGetShift, handleGetTransactions, dispatch, handleGetBalances, modalType, activeTab, previousShifts]);
 
+  // salvando dados para nao perder o estado da pagina ao clicar em outra pagina, persiste durante a sessao(navegador ser fechado);
+  React.useEffect(() => {
+
+    if (!activeTab) return;
+    console.log('activeTab use effect salvar no storage: ', activeTab)
+
+    const stateToSave = {
+      activeTab,
+      initialDate,
+      endDate,
+      previousShifts
+    };
+
+    sessionStorage.setItem('@CashierPage:state', JSON.stringify(stateToSave));
+
+  }, [activeTab, initialDate, endDate, previousShifts]);
+
+
+  function getDataSession() {
+    const dataSession = sessionStorage.getItem('@CashierPage:state');
+    if (dataSession && dataSession !== "[object Object]") {
+      try {
+        return JSON.parse(dataSession);
+      } catch (error) {
+        console.error('error fetching session storage cashier: ', error);
+      }
+    }
+    return {};
+  }
 
   const handleConfirmAction = async (data) => {
 
@@ -156,12 +202,41 @@ export default function Cashier() {
   }
 
 
+  function handleFilterDate() {
+
+    if (!initialDate && !endDate) {
+      toast.error('Initial and final date must be provided');
+      return;
+    }
+
+    console.log('Filter date called: ');
+    console.log('InitalDate: ', initialDate);
+    console.log('finalDate: ', endDate);
+    // checar se final e menor do que inicial;
+
+    async function getFilteredCashier() {
+      try {
+        setIsLoading(true);
+        const history = await handleFilteredShifts({ initialDate, endDate });
+        setPreviousShifts(history);
+        setIsLoading(false);
+        toast.success("Filtered applied")
+      } catch (e) {
+        setIsLoading(false);
+        toast.error('Error getting transactions');
+        console.log(e)
+      }
+
+    }
+    getFilteredCashier();
+  }
+
   return (
     <MainContainer>
       <Loading isLoading={isLoading} />
 
       {modalType && (
-        <Modal showModal={!!modalType} closeModal={() => {setModalType(null)}}>
+        <Modal showModal={!!modalType} closeModal={() => { setModalType(null) }}>
           <CashierModalManager
             modalType={modalType}
             onCancel={() => setModalType(null)}
@@ -184,24 +259,6 @@ export default function Cashier() {
           active={activeTab === 'previous'}
           onClick={async () => {
             setActiveTab('previous');
-            const today = new Date();
-            const thirtyDaysBefore = new Date();
-            thirtyDaysBefore.setDate(today.getDate() - 30);
-
-            const endDate = today.toISOString().split('T')[0];
-            const initialDate = thirtyDaysBefore.toISOString().split('T')[0]; 
-            try {
-              setIsLoading(true);
-              const history = await handleFilteredShifts({ initialDate, endDate });
-              setPreviousShifts(history);
-              setIsLoading(false);
-              toast.success("Last 30 days transactions restablished")
-            } catch (e) {
-              setIsLoading(false);
-                toast.error('Error getting transactions');
-                console.log(e)
-            }
-
           }}
         >
           Previous Cashier
@@ -321,9 +378,42 @@ export default function Cashier() {
         < CashierContainer >
           <CashierSubContainer style={{ maxWidth: '100%' }}>
             <h2>History of closed cashiers</h2>
-            <h3>List of previous cashier transactions (last 30 days)</h3>
-            <div className="actions">
-              <button onClick={() => { setModalType('FILTER_DATE') }}>Filter</button>
+
+            <div
+              className="actions"
+              style={{
+                display: 'flex',
+                flexDirection: "row"
+              }}>
+              <LabelDate>
+                Initial date:
+
+                <InputDate
+                  type='date'
+                  value={initialDate}
+                  onChange={(e) => setInitialDate(e.target.value)}>
+                </InputDate>
+              </LabelDate>
+
+              <LabelDate>
+                Final date:
+                <InputDate
+                  type='date'
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}></InputDate>
+              </LabelDate>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginLeft: '10px'
+                }}>
+                <FilterButton
+                  onClick={() => handleFilterDate()}
+                >Filter</FilterButton>
+              </div>
             </div>
             {
               <Table >
@@ -355,17 +445,20 @@ export default function Cashier() {
                       <tr key={item.id} >
                         <td>{dateFormatter.format(new Date(item.startTime))}</td>
                         <td>R$ {item.openingBalance}</td>
-                        <td> {item.endTime ? dateFormatter.format(new Date(item.endTime)) : 'CURRENTLY OPENED'}</td>
+                        <td>
+                          {item.endTime ? dateFormatter.format(new Date(item.endTime)) : <div><span style={{color: "#27d65b"}}><strong>CURRENTLY OPENED</strong></span></div>
+                          }
+                          </td>
                         <td>{toCurrency(item.closingBalance)}</td>
                         <td>{toCurrency(item.difference)}</td>
                       </tr>
                     )) : (<tr><td>No data</td></tr>)
                   }
-                </tbody>  
+                </tbody>
               </Table>
 
             }
-            
+
           </CashierSubContainer>
         </CashierContainer>)}
     </MainContainer >);
