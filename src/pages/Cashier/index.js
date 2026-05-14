@@ -86,7 +86,7 @@ export default function Cashier() {
               handleGetTransactions(shiftId),
               handleGetBalances(shiftId)
             ]);
-
+            console.log("shiftData CASHIER: ", shiftData)
           const { openingBalance, startTime } = shiftData;
           setOpenedAt(startTime);
           setInitialBalance(openingBalance);
@@ -178,6 +178,11 @@ export default function Cashier() {
       }
 
       if (modalType === 'WITHDRAW') {
+
+        if(data.amount > 0){
+          toast.error('A quantia para saque deve ser menor do que zero(negativa)', {autoClose: 5000});
+          return;
+        }
         await handleWithdraw(data);
         setModalType('');
         toast.success('Saque realizado');
@@ -252,7 +257,7 @@ export default function Cashier() {
           active={activeTab === 'current'}
           onClick={() => setActiveTab('current')}
         >
-          Current Cashier
+          Caixa atual
         </TabButton>
 
         <TabButton
@@ -261,7 +266,7 @@ export default function Cashier() {
             setActiveTab('previous');
           }}
         >
-          Previous Cashier
+          Caixas anteriores
         </TabButton>
       </TabNav>
 
@@ -269,7 +274,7 @@ export default function Cashier() {
         <CashierContainer >
           <CashierSubContainer>
 
-            <h1>Cash Summary</h1>
+            <h1>Resumo do Caixa</h1>
             <div style={{ paddingBottom: '4px' }}>
               <div>
                 <span className="label"><strong>OPENED AT:  </strong> </span>
@@ -322,7 +327,7 @@ export default function Cashier() {
 
           <CashierSubContainer>
 
-            <h1>Payment Method</h1>
+            <h1>Meio de Pagamento</h1>
 
             {balances.length > 0 ? (
               balances.map((item, index) =>
@@ -345,7 +350,7 @@ export default function Cashier() {
           </CashierSubContainer>
 
           <CashierSubContainer >
-            <h2>Transactions</h2>
+            <h2>Transações</h2>
             <button onClick={isCashierOpen ? () => setModalType('CLOSE_CASHIER')
               : () => setModalType('OPEN_CASHIER')}>{isCashierOpen ? 'Close Cashier' : 'Open Cashier'}
             </button>
@@ -377,7 +382,7 @@ export default function Cashier() {
 
         < CashierContainer >
           <CashierSubContainer style={{ maxWidth: '100%' }}>
-            <h2>History of closed cashiers</h2>
+            <h2>Histórico de Caixa</h2>
 
             <div
               className="actions"
