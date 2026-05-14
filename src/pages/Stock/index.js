@@ -37,14 +37,15 @@ export default function Stock() {
         const endDate = today.toISOString().split('T')[0];
         const initialDate = thirtyDaysAgo.toISOString().split('T')[0];
 
-        const transactionsResponse = await axios.get(`/stock/transactions/filter`, {
+        const transactionsResponse = await axios.get(`/stock/transactions`, {
           params: {
             initialDate,
             endDate
           }
         });
-        console.log("transactions response", transactionsResponse)
-        const stockResponse = await axios.get('/stock/index')
+        console.log("transactions response", transactionsResponse);
+
+        const stockResponse = await axios.get('/stock');
 
         console.log("stock", stockResponse.data);
         console.log("transactions", transactionsResponse.data);
@@ -55,11 +56,12 @@ export default function Stock() {
         setIsLoading(false);
       } catch (e) {
         setIsLoading(false);
+        console.log('Error useEffect stock: ',e);
         toast.error(e.message);
       }
     }
     getData();
-  }, [currentTab, modalType]);
+  }, [currentTab]);
 
   function handleFilter() {
     setModalType('FILTER_TRANSACTIONS');
@@ -74,13 +76,13 @@ export default function Stock() {
     async function getData() {
       try {
         setIsLoading(true);
-        const { data } = await axios.get('/stock/transactions/filter', {
+        const { data } = await axios.get('/stock/transactions', {
           params: {
             initialDate,
             endDate
           }
         });
-
+        console.log("datadatadatadata");
         console.log(data);
         if (data?.length === 0) {
           setIsLoading(false);
