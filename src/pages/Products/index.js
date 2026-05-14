@@ -11,7 +11,8 @@ import {
   SlPencil, SlMinus, SlTag
 } from "react-icons/sl";
 import { ImgModal } from './components/ImgModal';
-
+import { useDispatch } from "react-redux";
+import { loginFailure } from '../../store/modules/auth/actions';
 
 export default function Products() {
 
@@ -20,8 +21,7 @@ export default function Products() {
 
   const [imgsrc, setImgsrc] = useState('');
   const [showModal, setShowModal] = useState(false);
-
-
+  const dispatch = useDispatch();
   // const apiUrl = 'http://192.168.0.233:3001';
 
   React.useEffect(() => {
@@ -34,7 +34,10 @@ export default function Products() {
         toast.success()
         setIsLoading(false);
       } catch (e) {
+        console.log(e);
+        if(e.status === 401) dispatch(loginFailure());
         setIsLoading(false);
+        console.log("e.status: ",e.status);
         toast.error(e.message);
       }
     }
