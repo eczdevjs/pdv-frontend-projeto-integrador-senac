@@ -28,7 +28,7 @@ export default function Clients({ match }) {
       try {
         console.log('useEffect clients called')
         setIsLoading(true);
-        const { data } = await axios.get(`/clients/list`);
+        const { data } = await axios.get(`/clients`);
         console.log("data from clients: ", data);
         setClients(data);
         toast.success("Clients restored")

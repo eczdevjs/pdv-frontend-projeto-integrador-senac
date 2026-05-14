@@ -32,17 +32,18 @@ export default function NewSale({ onConfirm, onCancel }) {
             try {
                 const { data } = await axios.get('/products');
                 setProductList(data);
-                const response = await axios.get('/paymentmethod/list');
+                const response = await axios.get('/payment-methods');
                 const methods = response.data;
-                const clientResponse = await axios.get('/clients/list');
+                const clientResponse = await axios.get('/clients');
                 setClients(clientResponse.data);
+                console.log("clients response:", clientResponse);
                 console.log('clients response: ', clientResponse)
 
                 setPaymentMetohds(methods);
                 console.log(data);
             } catch (error) {
                 console.log(error);
-                toast.error('Error fetching products')
+                toast.error(error.message);
             }
         }
 
@@ -88,25 +89,22 @@ export default function NewSale({ onConfirm, onCancel }) {
 
             if (isCashierOpen) {
                 try {
-                    const response = await axios.post('sales/create', order);
+                    const response = await axios.post('/sales', order);
                     console.log(response);
                     console.log("order: ", order);
 
-                    toast.success('Sale Succeed');
+                    toast.success('Venda realizada com sucesso!');
                     onCancel();
-
-
                 } catch (error) {
-                    toast.error('Error creating sale register');
+                    toast.error('Erro ao realizar venda');
+                    toast.error(error.response.data.message, {autoClose:6000});
                     console.log("error creating sale: ", error);
                 }
             } else {
                 toast.error("Cahier has not been opened, open it and try again");
             }
         }
-
         createSale();
-
     }
 
 

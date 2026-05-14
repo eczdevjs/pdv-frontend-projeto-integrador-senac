@@ -21,6 +21,8 @@ export default function Register() {
   const phoneStored = useSelector(state => state.auth.user.phone);
   const isLoading = useSelector(state => state.auth.isLoading);
 
+  
+  console.log('Saved data from user: ', {id, nameStored, lastNameStored, emailStored, phoneStored});
 
   const [name, setName] = useState('');
   const [lastName, setLastName] = useState('');

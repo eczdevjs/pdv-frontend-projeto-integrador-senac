@@ -115,13 +115,16 @@ export const CashierProvider = ({ children }) => {
 
     const handleWithdraw = async ({ amount, reason }) => {
         try {
+
             const data = await withdrawRequest(shiftId, { amount, reason });
             return data;
         } catch (error) {
+            console.log('error withdrawing: ', error);
             throw error;
         }
     }
 
+    // este metodo ja nao filtra por data?
     const handlePreviousShifts = async (initialDate, endDate) => {
         try {
             const data = await previousShiftsRequest(initialDate, endDate);
@@ -131,6 +134,7 @@ export const CashierProvider = ({ children }) => {
         }
     }
 
+    
     const handleFilteredShifts = async (dates) => {
         try {
             console.log("handleFiltered useCashier: ", dates);
