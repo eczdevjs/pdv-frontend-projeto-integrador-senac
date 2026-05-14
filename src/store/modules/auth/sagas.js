@@ -37,7 +37,7 @@ function* registerRequest({ payload }) {
 
     try {
         if (id) {
-            yield call(axios.put, '/users/create/', {
+            yield call(axios.put, '/users', {
                 name,
                 lastName,
                 email,
@@ -48,7 +48,7 @@ function* registerRequest({ payload }) {
 
             yield put(actions.registerUpdatedSuccess({ name, email, password }));
         } else {
-            const response = yield call(axios.post, '/users/create/', {
+            const response = yield call(axios.post, '/users', {
                 name,
                 lastName,
                 email,
