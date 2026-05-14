@@ -26,9 +26,6 @@ import { toCurrency } from "../../utils/currencyValue";
 
 
 
-
-
-
 export default function Sales({ match }) {
 
   const dispatch = useDispatch();
@@ -53,7 +50,7 @@ export default function Sales({ match }) {
 
   const [initialDate, setInitialDate] = useState(savedData.initialDate || '');
 
-  const [finalDate, setFinalDate] = useState(savedData.finalDate || '')
+  const [endDate, setEndDate] = useState(savedData.endDate || '')
   const [filteredHistorySales, setFilteredHistorySales] = useState(savedData.filteredHistorySales || []);
 
 
@@ -71,9 +68,13 @@ export default function Sales({ match }) {
         try {
           setIsLoading(true);
           console.log('shiftId from sales: ', shiftId);
-          const { data } = await axios.get(`/sales/list/daily/${shiftId}`);
-          (() => { console.log("Data from getData", data.data) })();
-          setHistorySales(data.data);
+          const response = await axios.get(`/sales`, {
+            params: {
+              shiftId
+            }
+          });
+          (() => { console.log("Data from getData", response) })();
+          setHistorySales(response.data);
           setIsLoading(false);
         } catch (error) {
 
@@ -88,8 +89,6 @@ export default function Sales({ match }) {
     getData();
   }, [isCashierOpen, shiftId, showModal, modalType, activeTab]);
 
-
-
   // salvando dados para nao perder o estado da pagina ao clicar no detalhe de uma venda que direciona para outra pagina (Sale);
   React.useEffect(() => {
 
@@ -99,13 +98,13 @@ export default function Sales({ match }) {
     const stateToSave = {
       activeTab,
       initialDate,
-      finalDate,
+      endDate,
       filteredHistorySales
     };
 
     sessionStorage.setItem('@SalesPage:state', JSON.stringify(stateToSave));
 
-  }, [activeTab, initialDate, finalDate, filteredHistorySales]);
+  }, [activeTab, initialDate, endDate, filteredHistorySales]);
 
 
 
@@ -115,22 +114,22 @@ export default function Sales({ match }) {
 
 
   function handleFilterDate() {
-    if (!initialDate && !finalDate) {
+    if (!initialDate || !endDate) {
       toast.error('Initial and final date must be provided');
       return;
     }
 
     console.log('Filter date called: ');
     console.log('InitalDate: ', initialDate);
-    console.log('finalDate: ', finalDate);
+    console.log('endDate: ', endDate);
     // checar se final e menor do que inicial;
 
     async function getFilteredSale() {
       try {
-        const { data } = await axios.get('/sales/filter', {
+        const { data } = await axios.get('/sales', {
           params: {
             initialDate,
-            finalDate
+            endDate
           }
         });
         console.log('filted sale request: ', data);
@@ -209,7 +208,7 @@ export default function Sales({ match }) {
           <Container>
             <h3>Sales from current cashier session</h3>
 
-            {historySales.length > 0 && (
+            {historySales?.length > 0 && (
               <Table>
                 <thead>
                   <tr>
@@ -225,6 +224,7 @@ export default function Sales({ match }) {
                 <tbody>
                   {
                     historySales.map(item => (
+                    
                       <tr key={item.id}>
                         <td>{item.order.id}</td>
                         <td>{dateFormatter.format(new Date(item.order.createdAt))}</td>
@@ -257,7 +257,7 @@ export default function Sales({ match }) {
               </LabelDate>
               <LabelDate>
                 Final date:
-                <InputDate type='date' value={finalDate} onChange={(e) => setFinalDate(e.target.value)}></InputDate>
+                <InputDate type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)}></InputDate>
               </LabelDate>
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: '10px' }}>
                 <FilterButton onClick={() => handleFilterDate()}>Filter</FilterButton>
@@ -284,14 +284,14 @@ export default function Sales({ match }) {
                   <tbody>
                     {
                       filteredHistorySales.map(item => (
-                        <tr key={item.id}>
-                          <td>{item.id}</td>
-                          <td>{dateFormatter.format(new Date(item.createdAt))}</td>
-                          <td>{item.paymentMethod.name}</td>
-                          <td>{toCurrency(item.totalOrder)}</td>
+                        <tr key={item.order.id}>
+                          <td>{item.order.id}</td>
+                          <td>{dateFormatter.format(new Date(item.order.createdAt))}</td>
+                          <td>{item.order.paymentMethod.name}</td>
+                          <td>{toCurrency(item.order.totalOrder)}</td>
                           <td>
 
-                            <Link to={`/sale/${item.id}`} >
+                            <Link to={`/sale/${item.order.id}`} >
                               <SlArrowRight size={10} />
                             </Link>
 
