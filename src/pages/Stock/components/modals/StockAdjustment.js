@@ -35,7 +35,8 @@ export function StockAdjustment({ onConfirm, onCancel }) {
 
             errors = true;
         }
-        if (reason.trim().length === 0) {
+
+        if (!reason || reason.trim().length === 0) {
             toast.error('Reason is required', { autoClose: 5000 });
             errors = true;
         }
