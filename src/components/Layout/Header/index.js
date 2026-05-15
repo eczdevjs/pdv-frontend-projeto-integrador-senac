@@ -33,24 +33,24 @@ export default function Header() {
       </NavLink>
 
       <NavLink to="/cashier">
-        <SlDrawer size={24} /><span>Cashier</span>
+        <SlDrawer size={24} /><span>Caixa</span>
       </NavLink>
 
       <NavLink to="/sales">
-        <SlNote size={24} /><span>Sales</span>
+        <SlNote size={24} /><span>Vendas</span>
       </NavLink>
 
 
       <NavLink to="/clients">
-        <SlPeople size={24} /><span>Clients</span>
+        <SlPeople size={24} /><span>Clientes</span>
       </NavLink>
 
       <NavLink to="/products">
-        <SlTag size={24} /><span>Products</span>
+        <SlTag size={24} /><span>Produtos</span>
       </NavLink>
 
       <NavLink to="/stock">
-        <SlSocialDropbox size={24} /><span>Stock</span>
+        <SlSocialDropbox size={24} /><span>Estoque</span>
       </NavLink>
 
 
@@ -59,7 +59,7 @@ export default function Header() {
         (
           <>
             <NavLink to="/register">
-              <SlUser size={24} /><span>Account</span>
+              <SlUser size={24} /><span>Minha Conta</span>
             </NavLink>
             <div className="logout">
               <button >
