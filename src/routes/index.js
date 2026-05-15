@@ -13,6 +13,7 @@ import Stock from '../pages/Stock';
 import Cashier from '../pages/Cashier';
 import Register from '../pages/Register';
 import Home from '../pages/Home';
+import CashierHistoryDetails from '../pages/Cashier/components/CashierHistoryDetail';
 import { Photo } from "../pages/Photo";
 import { toast } from "react-toastify";
 
@@ -47,6 +48,8 @@ function Routes() {
       <CustomRoute exact path="/stock" component={Stock} isClosed={true} />
       <CustomRoute exact path="/login" component={Login} isClosed={false} />
       <CustomRoute exact path="/cashier" component={Cashier} isClosed={true} />
+
+      <CustomRoute exact path="/cashier/:shiftId" component={CashierHistoryDetails} isClosed={true} />
       <CustomRoute exact path="/register" component={Register} isClosed={false} />
       <CustomRoute component={Page404} />
 
