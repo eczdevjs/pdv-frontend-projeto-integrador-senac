@@ -101,7 +101,7 @@ export default function NewSale({ onConfirm, onCancel }) {
                     console.log("error creating sale: ", error);
                 }
             } else {
-                toast.error("Cahier has not been opened, open it and try again");
+                toast.error("Caixa não está aberto, abra o caixa para realizar uma venda");
             }
         }
         createSale();
@@ -125,7 +125,7 @@ export default function NewSale({ onConfirm, onCancel }) {
     return (
         activeModal == "newSale" ? (<div style={{ "overflow": "scroll" }}>
           <label htmlFor="client" style={{marginBottom: '10px'}}>
-            Client:
+            Cliente:
             <Select
                 value={selectedClient}
                 options={clients}
@@ -139,7 +139,7 @@ export default function NewSale({ onConfirm, onCancel }) {
                 }}
                 getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option.id}
-                placeholder="Select client"
+                placeholder="Selecione o cliente"
                 isClearable
                 noOptionsMessage={() => "No client found"}
             />
@@ -163,7 +163,7 @@ export default function NewSale({ onConfirm, onCancel }) {
                 }}
                 getOptionLabel={(option) => option.name}
                 getOptionValue={(option) => option.id}
-                placeholder="Pick product up"
+                placeholder="Selecione o produto"
                 isClearable
                 noOptionsMessage={() => "No product found"}
             />
@@ -172,7 +172,7 @@ export default function NewSale({ onConfirm, onCancel }) {
                 setQtt(e.target.value);
                 let sub = productPrice * e.target.value;
                 setSubtotal(sub);
-            }} value={qtt} type="number" min={1} placeholder="Enter quantity"></input>
+            }} value={qtt} type="number" min={1} placeholder="quantidade"></input>
 
             <span placeholder="Total order"></span>
 
@@ -201,12 +201,12 @@ export default function NewSale({ onConfirm, onCancel }) {
                 <Table>
                     <thead>
                         <tr>
-                            <th>Code</th>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Qtt</th>
+                            <th>Codigo</th>
+                            <th>Produto</th>
+                            <th>Preço</th>
+                            <th>Qtd</th>
                             <th>Subtotal</th>
-                            <th>Action</th>
+                            <th>Ação</th>
                         </tr>
                     </thead>
 

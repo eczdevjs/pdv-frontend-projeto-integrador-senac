@@ -20,7 +20,7 @@ export default function Home() {
       try {
         const response = await axios.get('/sales/ranking');
         setRankingData(response.data);
-        console.log(response.data);
+        
         toast.success('Dados de vendas estabelecidos com sucesso')
         setIsLoading(false);
       } catch (e) {

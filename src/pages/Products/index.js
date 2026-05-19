@@ -77,20 +77,20 @@ export default function Products() {
     <Container>
       <Loading isLoading={isLoading} />
       {showModal && <ImgModal imgsrc={imgsrc} showModal={showModal} closeModal={() => setShowModal(false)} />}
-      <h1 style={{ fontFamily: "system-ui" }}>Products</h1>
-      <Link to="/product"> <IoAddCircle size={30} /><p><strong>New</strong></p></Link>
+      <h1 style={{ fontFamily: "system-ui" }}>Produtos</h1>
+      <Link to="/product"> <IoAddCircle size={30} /><p><strong>Novo</strong></p></Link>
       <ProductContainer>
         <Table>
           <thead>
             <tr>
               <td>Id</td>
-              <td>Photo</td>
-              <td>Product</td>
-              <td>Brand</td>
-              <td>Price</td>
-              <td>Model</td>
-              <td>Size</td>
-              <td>Actions</td>
+              <td>Foto</td>
+              <td>Produto</td>
+              <td>Marca</td>
+              <td>Preço</td>
+              <td>Modelo</td>
+              <td>Tamanho</td>
+              <td>Ações</td>
             </tr>
           </thead>
           <tbody>

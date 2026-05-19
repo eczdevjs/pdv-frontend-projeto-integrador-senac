@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import {loginFailure} from '../../store/modules/auth/actions'
 export function Photo({ match }) {
     const id = match.params?.id || '';
-    console.log("id from photo page=", id);
+    
     const [photo, setPhoto] = React.useState('');
     const [loading, setLoading] = React.useState(false);
     const dispatch = useDispatch();
@@ -38,10 +38,10 @@ export function Photo({ match }) {
 
     const handleChange = async e => {
         const photo = e.target.files[0];
-        console.log('selected photo: ', photo)
+        
 
         if (!photo) {
-            console.log('pohto not selected');
+            
             return;
         }
         const photoUrl = URL.createObjectURL(photo);

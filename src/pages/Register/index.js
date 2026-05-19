@@ -82,15 +82,15 @@ export default function Register() {
   return (
     <Container>
       <Loading isLoading={isLoading} />
-      <h1>{id ? 'Edit user' : 'Create your account'}</h1>
+      <h1>{id ? 'Editar usuário' : 'Crie sua conta'}</h1>
       <Form onSubmit={handleSubmit}>
         <label htmlFor="name">
-          Name
+          Nome
           <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="your name"></input>
         </label>
 
         <label htmlFor="lastName">
-          Last name
+          Sobrenome
           <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="your name"></input>
         </label>
 
@@ -101,7 +101,7 @@ export default function Register() {
 
 
         <label htmlFor="phone">
-          Phone
+          Contato
           <input type="text" value={phone} onChange={e => setPhone(e.target.value)} placeholder="your name"></input>
         </label>
 

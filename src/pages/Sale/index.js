@@ -21,7 +21,6 @@ export default function Sale({ match }) {
     timeStyle: 'short'
   });
 
-
   React.useEffect(() => {
     if (!id) return;
     console.log('useEffect Sale called')
@@ -48,19 +47,18 @@ export default function Sale({ match }) {
   return (
     <div style={{ display: "flex", flexDirection: 'column' }}>
 
-      <h1>Sale</h1>
+      <h1>Venda</h1>
       <Container>
         <Container >
-
 
           <OrderInfo>
             <dt>Id</dt>
             <dd>{order.id}</dd>
 
-            <dt>Date / Time</dt>
+            <dt>Data / Hora</dt>
             <dd>{dateFormatter.format(new Date(order.createdAt))}</dd>
 
-            <dt>CLIENT</dt>
+            <dt>Cliente</dt>
             <dd>{`${order.client?.name || ''} ${order.client?.lastName || ''}`}</dd>
 
             <dt className="total">Total</dt>
@@ -72,13 +70,13 @@ export default function Sale({ match }) {
           <Table>
             <thead>
               <tr key="headerTable">
-                <th>Quantity</th>
+                <th>Quantidade</th>
                 <th>Total</th>
-                <th>Payment</th>
-                <th>Name</th>
-                <th>Brand</th>
-                <th>Description</th>
-                <th>Size</th>
+                <th>Pagamento</th>
+                <th>Nome</th>
+                <th>Marca</th>
+                <th>Descrição</th>
+                <th>Tamanho</th>
               </tr>
 
             </thead>

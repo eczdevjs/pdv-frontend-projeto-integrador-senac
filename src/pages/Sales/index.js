@@ -151,7 +151,7 @@ export default function Sales({ match }) {
 
   return (
     <div style={{ display: "flex", flexDirection: 'column' }}>
-      <h1>Sales</h1>
+      <h1>Vendas</h1>
       <MainContainer>
 
         <Loading isLoading={isLoading} />
@@ -179,9 +179,9 @@ export default function Sales({ match }) {
               setModalType('NEW_SALE');
               console.log(modalType);
             } else {
-              toast.error("Cashier has not been opened, open it and try again");
+              toast.error("O Caixa não está aberto, abra o Caixa para realizar uma venda!", {autoClose:6000});
             }
-          }}>New Sale</button>
+          }}>Nova venda</button>
         </div>
 
         <TabNav>
@@ -189,7 +189,7 @@ export default function Sales({ match }) {
             active={activeTab === 'current'}
             onClick={() => setActiveTab('current')}
           >
-            Current session
+            Sessão atual
           </TabButton>
 
           <TabButton
@@ -198,7 +198,7 @@ export default function Sales({ match }) {
               setActiveTab('previous');
             }}
           >
-            Sale History
+            Histórico de vendas
           </TabButton>
 
         </TabNav>
@@ -206,17 +206,17 @@ export default function Sales({ match }) {
 
         {activeTab === 'current' && (
           <Container>
-            <h3>Sales from current cashier session</h3>
+            <h3>Vendas da sessão de caixa atual</h3>
 
             {historySales?.length > 0 && (
               <Table>
                 <thead>
                   <tr>
                     <td>Id</td>
-                    <td>Date</td>
-                    <td>Payment</td>
+                    <td>Data</td>
+                    <td>Pagamento</td>
                     <td>Total R$</td>
-                    <td>Action</td>
+                    <td>Ação</td>
                   </tr>
 
                 </thead>
@@ -252,31 +252,31 @@ export default function Sales({ match }) {
           <>
             <div className="actions" style={{ display: 'flex', flexDirection: "row" }}>
               <LabelDate>
-                Initial date:
+                Data inicial:
                 <InputDate type='date' value={initialDate} onChange={(e) => setInitialDate(e.target.value)}></InputDate>
               </LabelDate>
               <LabelDate>
-                Final date:
+                Data final:
                 <InputDate type='date' value={endDate} onChange={(e) => setEndDate(e.target.value)}></InputDate>
               </LabelDate>
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginLeft: '10px' }}>
-                <FilterButton onClick={() => handleFilterDate()}>Filter</FilterButton>
+                <FilterButton onClick={() => handleFilterDate()}>Filtrar</FilterButton>
               </div>
             </div>
 
             <Container>
 
-              <h3>Sales Filtered</h3>
+              <h3>Vendas por filtro</h3>
 
               {filteredHistorySales.length > 0 && (
                 <Table>
                   <thead>
                     <tr>
                       <td>Id</td>
-                      <td>Date</td>
-                      <td>Payment</td>
+                      <td>Data</td>
+                      <td>Pagamento</td>
                       <td>Total R$</td>
-                      <td>Action</td>
+                      <td>Ação</td>
                     </tr>
 
                   </thead>

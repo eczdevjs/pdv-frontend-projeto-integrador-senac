@@ -25,7 +25,7 @@ export function StockAdjustment({ onConfirm, onCancel }) {
 
         getProducts();
     }, []);
-    /// PAREI AQUI: FIX: TRANSACOES DO ESTOQUE NAO ESTAO SENDO ATUALIZADAS NA PAGINA DE HISTORICO
+  
     async function handleSubmit(e) {
         e.preventDefault();
         let errors = false;
@@ -51,17 +51,17 @@ export function StockAdjustment({ onConfirm, onCancel }) {
 
         const payload = {
             productId: selectedProduct.id,
-            qtyChange,
+            qtyChange: parseInt(qtyChange),
             reason
         }
 
+      
         try {
-            const response = await axios.put('/stock/adjustment/create/', payload);
+            const response = await axios.patch(`/stock/${payload.productId}`, payload);
             toast.success('Stock update succeed! :)')
             setSelectedProduct(null);
             setQtyChange(0);
             setReason('');
-            console.log(response);
         } catch (error) {
             console.log(error);
             toast.error(error);
@@ -70,9 +70,9 @@ export function StockAdjustment({ onConfirm, onCancel }) {
 
     return (<>
         <Form type="submit">
-            <h2>Stock Adjustment</h2>
+            <h2>Ajuste de Estoque</h2>
             <label>
-                *Select Product:
+                *Selecione o produto:
                 <Select
                     value={selectedProduct}
                     options={productList}
@@ -92,18 +92,18 @@ export function StockAdjustment({ onConfirm, onCancel }) {
             </label>
 
             <label htmlFor='qty'>
-                *Quantity to adjust:
+                *Quantidade à ser ajustada:
                 <input type='number' value={qtyChange} onChange={(e) => setQtyChange(e.target.value)}  ></input>
             </label>
 
             <label htmlFor='reason'>
-                *Reason :
+                *Motivo :
                 <textarea type='text' id='reason' value={reason} onChange={(e) => setReason(e.target.value)} required={true}
                     style={{ backgroundColor: '#dae0f4', minHeight: '120px', borderRadius: '4px' }}></textarea>
             </label>
 
             <div className='actions'>
-                <button onClick={(e) => handleSubmit(e)}>Confirm</button>
+                <button onClick={(e) => handleSubmit(e)}>Confirmar</button>
                 <button onClick={onCancel}>Cancel</button>
             </div>
 

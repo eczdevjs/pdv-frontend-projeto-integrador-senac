@@ -39,7 +39,6 @@ export default function Cashier() {
 
   const savedData = getDataSession();
 
-  console.log('Saved Data cashier: ', savedData);
 
   const [activeTab, setActiveTab] = useState(savedData.activeTab || 'current');
   const [previousShifts, setPreviousShifts] = useState(savedData.previousShifts || []);
@@ -80,7 +79,7 @@ export default function Cashier() {
         try {
 
           const openedShift = await handleGetOpenedShift();
-          if (openedShift) {
+          // if (openedShift) {
             const [shiftData,
               transactionData,
               balancesData] = await Promise.all([
@@ -88,12 +87,10 @@ export default function Cashier() {
                 handleGetTransactions(shiftId),
                 handleGetBalances(shiftId)
               ]);
-            console.log("shiftData CASHIER: ", shiftData)
             const { openingBalance, startTime } = shiftData;
             setOpenedAt(startTime);
             setInitialBalance(openingBalance);
             setTransactions(transactionData);
-            console.log('Transactions data: ', transactionData);
             setBalances(balancesData);
 
             const totals = transactionData.reduce((acc, t) => {
@@ -111,7 +108,7 @@ export default function Cashier() {
             const calculatedFinal = Number(openingBalance) + totals.deposits + totals.withdraw + totals.sales;
             setFinalBalance(calculatedFinal);
             setIsLoading(false);
-          }
+          // }
 
         } catch (e) {
           setIsLoading(false);
@@ -135,7 +132,6 @@ export default function Cashier() {
   React.useEffect(() => {
 
     if (!activeTab) return;
-    console.log('activeTab use effect salvar no storage: ', activeTab)
 
     const stateToSave = {
       activeTab,
@@ -174,7 +170,6 @@ export default function Cashier() {
       }
 
       if (modalType === 'CLOSE_CASHIER') {
-        console.log(`isCashierOpen ${isCashierOpen}, shiftId=${shiftId}, closingBalance=${data}`)
         await handleCloseCashier(isCashierOpen, shiftId, data);
         setModalType('')
         toast.success('Caixa fechado');
@@ -198,10 +193,7 @@ export default function Cashier() {
       }
 
       if (modalType === 'FILTER_DATE') {
-        console.log('cashier: ', data)
         const history = await handleFilteredShifts(data);
-        console.log("history: ", history);
-        console.log("data", data);
         setModalType('');
         setPreviousShifts(history);
 
@@ -228,9 +220,7 @@ export default function Cashier() {
       return;
     }
 
-    console.log('Filter date called: ');
-    console.log('InitalDate: ', initialDate);
-    console.log('finalDate: ', endDate);
+
     // checar se final e menor do que inicial;
 
     async function getFilteredCashier() {
@@ -324,14 +314,14 @@ export default function Cashier() {
             <div style={{ display: 'flex', gap: '10px', marginTop: '15px', padding: '10px' }}>
               <button style={{lineHeight:"2.5"}} onClick={() => {
                 if (!isCashierOpen) {
-                  toast.error('Cashier is not opened');
+                  toast.error('Abra o Caixa para realizar um depósito', {autoClose:6000});
                   return;
                 }
                 setModalType('DEPOSIT')
               }}>Adicionar saldo</button>
               <button style={{lineHeight:"2.5"}} onClick={() => {
                 if (!isCashierOpen) {
-                  toast.error('Cashier is not opened');
+                  toast.error('Abra o Caixa para realizar sangria', {autoClose:6000});
                   return;
                 }
                 setModalType('WITHDRAW')

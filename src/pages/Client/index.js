@@ -17,7 +17,6 @@ import { Link } from "react-router-dom";
 export default function Client({ match }) {
 
   const id = match.params.id;
-  console.log("match.params.id ======" , id);
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [lastName, setlastName] = useState('');
@@ -87,7 +86,7 @@ export default function Client({ match }) {
 
     try {
       if (id) {
-        const response = await axios.put(`/clients/edit/${id}`, {
+        const response = await axios.put(`/clients/${id}`, {
           name,
           lastName,
           email,
@@ -96,7 +95,7 @@ export default function Client({ match }) {
         toast.success('Data update succed!');
         history.push('/clients')
       } else {
-        const response = await axios.post(`/clients/register`, {
+        const response = await axios.post(`/clients`, {
           name,
           lastName,
           email,
@@ -110,7 +109,7 @@ export default function Client({ match }) {
       const status = get(error, 'response.data', 0);
       const data = get(error, 'response.data', {});
       const errors = get(error, 'response.errors', []);
-
+      console.log(error);
       if (errors.length > 0) {
         errors.map(e => toast.error(e))
       } else {
@@ -126,35 +125,35 @@ export default function Client({ match }) {
   return (
     <Container>
       <Loading isLoading={isLoading} />
-      <Title >{id ? 'Edit Client' : 'New Client'}</Title>
+      <Title >{id ? 'Editar Cliente' : 'NovoCliente'}</Title>
 
       <Form onSubmit={handleSubmit}>
         <label htmlFor="name">
-          *Name
+          *Nome
           <input type="text" value={name} onChange={e => setName(e.target.value)}>
           </input>
         </label>
 
         <label htmlFor="lastname">
-          *Last name
+          *Sobrenome
           <input type="text" value={lastName} onChange={e => setlastName(e.target.value)}>
           </input>
         </label>
 
         <label htmlFor="email">
-          Email
+          E-mail
           <input type="email" value={email} onChange={e => setEmail(e.target.value)}>
           </input>
         </label>
 
 
         <label htmlFor="phone">
-          *Phone
+          *Contato (celular/Telefone)
           <input type="text" value={phone} onChange={e => setPhone(e.target.value)}>
           </input>
         </label>
 
-        <button>{id ? 'Save' : 'Register'}</button>
+        <button>{id ? 'Salvar' : 'Registrar'}</button>
       </Form>
 
     </Container>

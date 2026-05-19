@@ -10,6 +10,7 @@ import { Modal } from "../../components/Layout/Modal";
 import Loading from "../../components/Loading";
 import { Link } from "react-router-dom";
 import MenuContainer from "./components/menu/NewTransactionMenu";
+import {toBrazilianDate} from '../../utils/toBrazilianDate';
 
 export default function Stock() {
 
@@ -43,12 +44,11 @@ export default function Stock() {
             endDate
           }
         });
-        console.log("transactions response", transactionsResponse);
+  
 
         const stockResponse = await axios.get('/stock');
 
-        console.log("stock", stockResponse.data);
-        console.log("transactions", transactionsResponse.data);
+      
         setStockList(stockResponse.data);
         setTransactionsList(transactionsResponse.data);
 
@@ -82,8 +82,7 @@ export default function Stock() {
             endDate
           }
         });
-        console.log("datadatadatadata");
-        console.log(data);
+  
         if (data?.length === 0) {
           setIsLoading(false);
           toast.error('No transactions found');
@@ -116,7 +115,6 @@ export default function Stock() {
   async function handleDeleteAsk(e, stock) {
     e.preventDefault();
     const confirm = window.confirm(`Do you really wish to exclude ${stock.name} ?`);
-    console.log(confirm);
     if (confirm) {
       try {
         setIsLoading(true);
@@ -144,22 +142,22 @@ export default function Stock() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <TabNav>
-        <TabButton onClick={() => setCurrentTab('currentStock')} active={currentTab === 'currentStock'}>Current Stock</TabButton>
-        <TabButton onClick={() => setCurrentTab('stockTransactions')} active={currentTab === 'stockTransactions'}>Stock Transactions</TabButton>
+        <TabButton onClick={() => setCurrentTab('currentStock')} active={currentTab === 'currentStock'}>Estoque atual</TabButton>
+        <TabButton onClick={() => setCurrentTab('stockTransactions')} active={currentTab === 'stockTransactions'}>Transações de Estoque</TabButton>
       </TabNav>
       {currentTab === 'currentStock' && (
         <>
-          <h1>Stock</h1>
+          <h1>Estoque</h1>
         
           <Container>
             <Table>
               <thead>
                 <tr key={'headerStockTable'}>
-                  <th >Product</th>
-                  <th>Current Stock</th>
-                  <th>Provider</th>
-                  <th>Category</th>
-                  <th>Brand</th>
+                  <th >Produto</th>
+                  <th>Estoque atual</th>
+                  <th>Fornecedor</th>
+                  <th>Categoria</th>
+                  <th>Marca</th>
                 </tr>
               </thead>
 
@@ -199,14 +197,14 @@ export default function Stock() {
               </StockModalManager>
             </Modal>
           )}
-          <h1>Stock Transactions</h1>
+          <h1>Transações de Estoque</h1>
 
           <div className="actions" style={{ display: 'flex', flexDirection: 'row', padding: '4px', columnGap: '20px' }}>
             <div>
               <MenuContainer setModalType={setModalType} />
             </div>
             {/* <input type="text" placeholder="search"></input> */}
-            <button onClick={handleFilter}>Filter by date</button>
+            <button onClick={handleFilter}>Filtrar por data</button>
           </div>
 
           <Container>
@@ -214,19 +212,19 @@ export default function Stock() {
               <thead>
                 <tr key={'header'}>
                   <th>
-                    Date/Time
+                    Data/Hora
                   </th>
                   <th>
-                    User
+                    Usuário
                   </th>
                   <th>
-                    Product
+                    Produto
                   </th>
                   <th>
-                    Transaction
+                    Transação
                   </th>
                   <th>
-                    Quantity changed
+                    Quantidade alterada
                   </th>
                 </tr>
               </thead>
@@ -234,7 +232,7 @@ export default function Stock() {
                 {
                   transactionsList.length > 0 && (transactionsList.map((t) =>
                     <tr key={t.id}>
-                      <td>{dateFormatter.format(new Date(t.createdAt))}</td>
+                      <td>{toBrazilianDate(new Date(t.createdAt))}</td>
                       <td>{t.user.name}</td>
                       <td>{t.product.name}</td>
                       <td>{t.referenceType.code}</td>

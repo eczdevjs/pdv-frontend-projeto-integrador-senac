@@ -85,7 +85,7 @@ export default function Product({ match }) {
 
     try {
       if (id) {
-        const response = await axios.put(`/products/edit/${id}`, {
+        const response = await axios.put(`/products/${id}`, {
           name,
           brand,
           productModel,
@@ -97,7 +97,7 @@ export default function Product({ match }) {
         toast.success('Data update succed!');
       } else {
 
-        const response = await axios.post(`/products/create`, {
+        const response = await axios.post(`/products`, {
           name,
           brand,
           productModel,
@@ -113,7 +113,7 @@ export default function Product({ match }) {
       const status = get(error, 'response.data', 0);
       const data = get(error, 'response.data', {});
       const errors = get(error, 'response.errors', []);
-
+      console.log("Erro editando produto: ",error)                   
       if (errors.length > 0) {
         errors.map(e => toast.error(e))
       } else {
@@ -129,7 +129,7 @@ export default function Product({ match }) {
   return (
     <Container>
       <Loading isLoading={isLoading} />
-      <h1 >{id ? 'Edit Product' : 'Product Registration'}</h1>
+      <h1 >{id ? 'Editar Produto' : 'Registrar produto'}</h1>
       {id && (
         <ProductPicture imgsize={25}>
           {photoUrl ? (<img src={photoUrl} alt="Product photo"></img>) : (<SlTag size={100}/>)}
@@ -141,43 +141,43 @@ export default function Product({ match }) {
 
       <Form onSubmit={handleSubmit}>
         <label htmlFor="name">
-          Name
+          Nome
           <input type="text" value={name} onChange={e => setName(e.target.value)}>
           </input>
         </label>
 
         <label htmlFor="lastname">
-          Brand
+          Marca
           <input type="text" value={brand} onChange={e => setBrand(e.target.value)}>
           </input>
         </label>
 
         <label htmlFor="text">
-          Model
+          Modelo
           <input type="text" value={productModel} onChange={e => setProductModel(e.target.value)}>
           </input>
         </label>
 
 
         <label htmlFor="text">
-          Description
+          Descrição
           <input type="text" value={description} onChange={e => setDescription(e.target.value)}>
           </input>
         </label>
 
         <label htmlFor="number">
-          Price
+          Preço
           <input type="text" value={price} onChange={e => setPrice(e.target.value)}>
           </input>
         </label>
 
         <label htmlFor="text">
-          Size
+          Tamanho
           <input type="text" value={size} onChange={e => setSize(e.target.value)}>
           </input>
         </label>
 
-        <button>{id ? 'Save' : 'Register'}</button>
+        <button>{id ? 'Salvar' : 'Registrar'}</button>
       </Form>
 
     </Container>

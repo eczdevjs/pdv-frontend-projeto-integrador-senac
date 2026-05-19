@@ -26,10 +26,8 @@ export default function Clients({ match }) {
 
     async function getData() {
       try {
-        console.log('useEffect clients called')
         setIsLoading(true);
         const { data } = await axios.get(`/clients`);
-        console.log("data from clients: ", data);
         setClients(data);
         toast.success("Clients restored")
         setIsLoading(false);
@@ -52,7 +50,6 @@ export default function Clients({ match }) {
   async function handleDeleteAsk(e, client) {
     e.preventDefault();
     const confirm = window.confirm(`Do you really wish to exclude ${client.name} ?`);
-    console.log(confirm);
     if (confirm) {
       try {
         setIsLoading(true);
@@ -81,17 +78,17 @@ export default function Clients({ match }) {
   return (
     <Container>
       <Loading isLoading={isLoading} />
-      <Title >Clients</Title>
-      <Link to="/client"> <SlUserFollow/> New Client </Link>
+      <Title >Clientes</Title>
+      <Link to="/client"> <SlUserFollow/> Novo Cliente </Link>
       <div>
         <Table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Last name</th>
+              <th>Nome</th>
+              <th>Sobrenome</th>
               <th>E-mail</th>
-              <th>Phone</th>
-              <th>Action</th>
+              <th>Celular</th>
+              <th>Ação</th>
             </tr>
           </thead>
           <tbody>

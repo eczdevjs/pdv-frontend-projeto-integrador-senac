@@ -17,8 +17,7 @@ import { Link } from "react-router-dom";
 export default function CashierHistoryDetail({ match }) {
     const [isLoading, setIsLoading] = useState(true);
     const shiftId = match.params.shiftId;
-    console.log({ match })
-    console.log("shiftId : ", shiftId);
+
     const [transactions, setTransactions] = useState([]);
     const { handleGetTransactions, handleGetShift } = useCashier();
     const [shift, setShift] = useState(null);
@@ -31,14 +30,14 @@ export default function CashierHistoryDetail({ match }) {
 
     React.useEffect(() => {
         if (!shiftId) return;
-        console.log('useEffect cashier detail called')
+
         async function getTransactions() {
             try {
                 const response = await handleGetTransactions(shiftId);
-                console.log("Response cashier detail transactions: ", response);
+
                 setTransactions(response);
                 const shift = await (handleGetShift(shiftId));
-                console.log("shiftRequest: ", shift)
+
                 setShift(shift);
 
             } catch (error) {

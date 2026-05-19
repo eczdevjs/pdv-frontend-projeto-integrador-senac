@@ -7,7 +7,7 @@ export function Modal({ children, showModal , closeModal}) {
         
 
         function hadleKeyDown(e){
-            console.log(`Tecla clicada: ${e.key}`);
+            // console.log(`Tecla clicada: ${e.key}`);
             if(e.key ==='Escape'){
                 if(!closeModal){
                     console.warn("Warning:  closeModal prop has not been provided");

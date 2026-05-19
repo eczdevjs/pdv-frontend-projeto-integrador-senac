@@ -28,13 +28,13 @@ const ActionMenu = ({setModalType}) => {
             <SlPlus size={30} onClick={() => setIsOpen(!isOpen)} />
             {isOpen && (
                 <MenuList>
-                    <MenuItem onClick={() => { setModalType('STOCK_PURCHASE'); console.log('Stock in')}}>New Purchase</MenuItem>
+                    <MenuItem onClick={() => { setModalType('STOCK_PURCHASE')}}>Nova compra</MenuItem>
 
-                    <MenuItem onClick={() => {console.log('Adjust'); setModalType('STOCK_ADJUSTMENT')}}>Adjust</MenuItem>
+                    <MenuItem onClick={() => { setModalType('STOCK_ADJUSTMENT')}}>Adjuste</MenuItem>
 
                     <Divider />
                    
-                    <MenuItem onClick={() => setIsOpen(false)}>Cancel</MenuItem>
+                    <MenuItem onClick={() => setIsOpen(false)}>Cancelar</MenuItem>
                 </MenuList>
             )}
         </MenuContainer>

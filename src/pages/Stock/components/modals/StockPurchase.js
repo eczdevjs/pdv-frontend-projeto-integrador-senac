@@ -43,7 +43,6 @@ export function StockPurchase({ onConfirm, onCancel }) {
         }
 
         if (!invoiceNumber) {
-            console.log('invoiceNumber', invoiceNumber)
             toast.error('Pending Invoice Number');
             return
         }
@@ -56,9 +55,8 @@ export function StockPurchase({ onConfirm, onCancel }) {
         };
 
         try {
-            const response = await axios.post('/stock/purchase/create', payload);
+            const response = await axios.post('/stock', payload);
             toast.success('Stock receipt recorde succeed');
-            console.log(response);
             onCancel();
         } catch (error) {
             toast.error(error);
@@ -92,7 +90,6 @@ export function StockPurchase({ onConfirm, onCancel }) {
         }
         const subtotal = qty * unityCost;
         const updatedTotal = subtotal + totalPurchase;
-        console.log('Total purchase: ', updatedTotal);
 
         setTotalPurchase(updatedTotal);
         const currentProducts = [...productsAdded];
@@ -113,9 +110,9 @@ export function StockPurchase({ onConfirm, onCancel }) {
 
     return (<>
         <Form type="submit">
-            <h2>Record a Stock Receipt</h2>
+            <h2>Registrar entrada de Estoque</h2>
             <label>
-                *Provider
+                *Fornecedor
                 <Select
                     value={selectedProvider}
                     options={providerList}
@@ -135,12 +132,12 @@ export function StockPurchase({ onConfirm, onCancel }) {
             </label>
 
             <label htmlFor='invoicenumber'>
-                *Invoice Number
+                *N° Nota Fiscal
                 <input type='number' placeholder='Invoice number ' value={invoiceNumber} onChange={(e) => setInvoiceNumber(e.target.value)}></input>
             </label>
 
             <label htmlFor='product'>
-                *Product
+                *Produto
                 <Select
                     value={selectedProduct}
                     options={productList}
@@ -160,13 +157,13 @@ export function StockPurchase({ onConfirm, onCancel }) {
             </label>
 
             <label htmlFor='qty'>
-                *Quantity:
+                *Quantidade:
                 <input type='number' placeholder='Quantity'
                     value={qty} onChange={(e) => setQty(Number(e.target.value))} ></input>
             </label>
 
             <label htmlFor='unityCost'>
-                *Unity Cost
+                *Preço unitário
                 <input type='number' placeholder='Unity cost' value={unityCost} onChange={(e) => setUnityCost(Number(e.target.value))}></input>
             </label>
 
@@ -181,10 +178,10 @@ export function StockPurchase({ onConfirm, onCancel }) {
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Unity cost</th>
-                        <th>Action</th>
+                        <th>Produto</th>
+                        <th>Quandade</th>
+                        <th>Custo unitário</th>
+                        <th>Ação</th>
                     </tr>
                 </thead>
 
@@ -208,7 +205,7 @@ export function StockPurchase({ onConfirm, onCancel }) {
                             <td>
                                 <button onClick={() => {
                                     handleDeleteItem(index)
-                                    console.log('Delete clicked, index=', index)
+                                 
                                 }}>delete</button>
                             </td>
                         </tr>
@@ -220,7 +217,7 @@ export function StockPurchase({ onConfirm, onCancel }) {
         {
             productsAdded.length > 0 && (
                 <div style={{ padding: '8px' }}>
-                    <button onClick={(e) => handleSubmit(e)}>Confirm purchase</button>
+                    <button onClick={(e) => handleSubmit(e)}>Confirmar entrada</button>
                 </div>
 
             )
