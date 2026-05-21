@@ -52,7 +52,7 @@ Como este projeto está em ambiente de desenvolvimento acadêmico, a conexão co
 
 Se precisar alterar a URL da API, abra o projeto e navegue até:
 
-- src/services/axios.js (ou api.js)
+- src/services/axios.js
 
 - Altere a propriedade baseURL: "sua_url_desejada"
 
