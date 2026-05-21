@@ -4,6 +4,10 @@ Este é o repositório do frontend do **E-PDV**, um sistema de Ponto de Venda mo
 
 ---
 
+### 📌 Links do Projeto
+- Repositório Backend: https://github.com/eczdevjs/pdv-backend-projeto-integrador-senac
+- ▶️ Demonstração em Vídeo (YouTube): https://www.youtube.com/watch?v=k_fSXlfXJnE
+
 ## 🚀 Tecnologias Utilizadas
 
 * **React.js** (Biblioteca principal para construção da interface)
@@ -17,11 +21,11 @@ Este é o repositório do frontend do **E-PDV**, um sistema de Ponto de Venda mo
 ## 💻 Telas e Funcionalidades Implementadas
 
 * **🔑 Tela de Login (Autenticação):** Integração com o Bearer Token obtido do backend, salvando o estado de sessão do usuário de forma segura.
+* **📊 Tela de Dashboard de Vendas:** ntegração com os dados analíticos do backend, exibindo gráficos e métricas de desempenho de vendas em tempo real.
 * **📦 Gestão de Produtos:** Listagem, visualização de detalhes e controle visual de estoque.
 * **🛒 Frente de Caixa (PDV):** Interface dinâmica para bipar/selecionar produtos, atualizar quantidades no carrinho, calcular o total automaticamente e simular o pagamento.
 * **👥 Cadastro de Clientes:** Interface para vincular um cliente à venda atual.
 * **📊 Histórico de Caixa:** Visualização do status do caixa (Aberto/Fechado) e últimas transações filtradas.
-
 ---
 
 ## 🛠️ Como Executar o Projeto Localmente
