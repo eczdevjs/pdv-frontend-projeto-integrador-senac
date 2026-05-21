@@ -1,70 +1,89 @@
-# Getting Started with Create React App
+# 🛒 E-PDV - Frontend (Ponto de Venda)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Este é o repositório do frontend do **E-PDV**, um sistema de Ponto de Venda moderno, ágil e intuitivo desenvolvido como Projeto Integrador para o Senac. A aplicação foi construída em **React** para oferecer uma experiência de usuário fluida, com atualizações em tempo real no carrinho e fechamento de caixa.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Tecnologias Utilizadas
 
-### `npm start`
+* **React.js** (Biblioteca principal para construção da interface)
+* **React Router Dom V5** (Gerenciamento de rotas e navegação da SPA)
+* **Axios** (Cliente HTTP para consumo da API integrada)
+* **Context API / Hooks / Redux Saga** (Gerenciamento de estado global para o carrinho, autenticação e efeitos colaterais)
+* **Styled Components** (Biblioteca de CSS-in-JS para estilização dinâmica, escopo isolado de componentes e utilização de temas)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 💻 Telas e Funcionalidades Implementadas
 
-### `npm test`
+* **🔑 Tela de Login (Autenticação):** Integração com o Bearer Token obtido do backend, salvando o estado de sessão do usuário de forma segura.
+* **📦 Gestão de Produtos:** Listagem, visualização de detalhes e controle visual de estoque.
+* **🛒 Frente de Caixa (PDV):** Interface dinâmica para bipar/selecionar produtos, atualizar quantidades no carrinho, calcular o total automaticamente e simular o pagamento.
+* **👥 Cadastro de Clientes:** Interface para vincular um cliente à venda atual.
+* **📊 Histórico de Caixa:** Visualização do status do caixa (Aberto/Fechado) e últimas transações filtradas.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🛠️ Como Executar o Projeto Localmente
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Pré-requisitos
+Certifique-se de ter o **Node.js** (versão 18 ou superior) e um gerenciador de pacotes (npm ou yarn) instalados em sua máquina.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 1. Clonar o Repositório
+```bash
+git clone [https://github.com/seu-usuario/seu-repositorio-frontend.git](https://github.com/seu-usuario/seu-repositorio-frontend.git)
+cd seu-repositorio-frontend
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 2. Instalar as Dependências
 
-### `npm run eject`
+```bash
+npm install
+# ou yarn install
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 3. Configuração da API (Backend)
+Como este projeto está em ambiente de desenvolvimento acadêmico, a conexão com o backend está configurada diretamente no arquivo de serviços, apontando por padrão para: http://localhost:3001
 
-## Learn More
+💡 **Nota sobre Arquitetura**: Por se tratar de um MVP (Mínimo Produto Viável) para fins didáticos e rodar estritamente em ambiente local (localhost), optamos por centralizar a URL base no arquivo de serviço para acelerar o desenvolvimento. No entanto, estamos cientes de que para um ambiente de produção real (deploy), a melhor prática de segurança e escalabilidade seria isolar essa URL em um arquivo .env.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Se precisar alterar a URL da API, abra o projeto e navegue até:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- src/services/axios.js (ou api.js)
 
-### Code Splitting
+- Altere a propriedade baseURL: "sua_url_desejada"
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 4. Iniciar o Servidor de Desenvolvimento
 
-### Making a Progressive Web App
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
+### 🔗 Integração com o Backend & Segurança
+O frontend consome as rotas protegidas da API utilizando a estratégia de Bearer Token.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1 -  Ao efetuar o login, o token JWT retornado pela API é armazenado localmente, sendo gerenciado com o auxílio do Saga para fluxos assíncronos.
 
-### Deployment
+2  - Todas as requisições subsequentes para rotas protegidas (como salvar uma venda ou cadastrar produto) incluem automaticamente esse token no cabeçalho (Header) das requisições:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+    Authorization: Bearer <seu_token_jwt>
 
-### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### 🎨 Arquitetura de Estilização (Styled Components)
+A opção pelo Styled Components garante os seguintes benefícios de engenharia de software no frontend:
+
+- Escopo Isolado: Evita conflitos de classes CSS (CSS Leaking) entre diferentes telas do PDV.
+
+- Estilização Dinâmica: Facilidade para alterar cores e estados de elementos (como alertas de estoque baixo) diretamente através das props do React.
+
+- Estilo Global: Centralização de fontes, resets e variáveis de cores padrões do sistema.
+
+
+
+
