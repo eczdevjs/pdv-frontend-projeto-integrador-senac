@@ -31,8 +31,8 @@ Certifique-se de ter o **Node.js** (versão 18 ou superior) e um gerenciador de 
 
 ### 1. Clonar o Repositório
 ```bash
-git clone [https://github.com/seu-usuario/seu-repositorio-frontend.git](https://github.com/seu-usuario/seu-repositorio-frontend.git)
-cd seu-repositorio-frontend
+git clone githttps://github.com/eczdevjs/pdv-frontend-projeto-integrador-senac.git
+cd pdv-frontend-projeto-integrador-senac
 ```
 
 ### 2. Instalar as Dependências
