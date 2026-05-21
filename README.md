@@ -21,7 +21,7 @@ Este é o repositório do frontend do **E-PDV**, um sistema de Ponto de Venda mo
 ## 💻 Telas e Funcionalidades Implementadas
 
 * **🔑 Tela de Login (Autenticação):** Integração com o Bearer Token obtido do backend, salvando o estado de sessão do usuário de forma segura.
-* **📊 Tela de Dashboard de Vendas:** ntegração com os dados analíticos do backend, exibindo gráficos e métricas de desempenho de vendas em tempo real.
+* **📊 Tela de Dashboard de Vendas:** Integração com os dados analíticos do backend, exibindo gráficos e métricas de desempenho de vendas em tempo real.
 * **📦 Gestão de Produtos:** Listagem, visualização de detalhes e controle visual de estoque.
 * **🛒 Frente de Caixa (PDV):** Interface dinâmica para bipar/selecionar produtos, atualizar quantidades no carrinho, calcular o total automaticamente e simular o pagamento.
 * **👥 Cadastro de Clientes:** Interface para vincular um cliente à venda atual.
